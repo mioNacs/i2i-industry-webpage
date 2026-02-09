@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Section } from "@/components/ui/container";
 import AnimateOnScroll from "@/components/ui/animate-on-scroll";
+import SectionHeader from "@/components/ui/section-header";
 import { HiArrowRight, HiCalendar, HiCheckCircle } from "react-icons/hi";
 
 export interface CourseData {
@@ -39,27 +40,27 @@ export default async function Courses() {
       </div>
 
       <div className="relative z-10">
-        {/* Header Section */}
-        <AnimateOnScroll>
-          <div className="text-center max-w-4xl mx-auto mb-12 ">
-
-            {/* Title */}
-            <h2 className="text-3xl md:text-5xl font-bold mb-6 leading-tight">
-              Our Top Selling<span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent"> Courses</span>
+        <SectionHeader
+          title={
+            <>
+              Our Top Selling
+              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                {" "}Courses
+              </span>
               <br />
               <span className="text-2xl md:text-4xl text-gray-600 font-semibold">
                 For Focused Professionals
               </span>
-            </h2>
-
-            {/* Subtitle */}
-            <p className="text-base md:text-lg text-gray-600 leading-relaxed max-w-3xl mx-auto">
+            </>
+          }
+          subtitle={
+            <>
               Confused about which career to switch to? Try our{" "}
               <span className="font-semibold text-primary">Free Career Counselling</span>{" "}
               & get all your doubts cleared. Master Data Science, Software Development, DSA, & Data Engineering.
-            </p>
-          </div>
-        </AnimateOnScroll>
+            </>
+          }
+        />
 
         {/* Courses Grid */}
         <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">

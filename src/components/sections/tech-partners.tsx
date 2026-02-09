@@ -2,6 +2,7 @@ import { getTeachingPartners } from "@/lib/contentful/client";
 import Image from "next/image";
 import { Section } from "@/components/ui/container";
 import AnimateOnScroll from "@/components/ui/animate-on-scroll";
+import SectionHeader from "@/components/ui/section-header";
 import { HiArrowRight } from "react-icons/hi";
 
 export default async function TechPartners() {
@@ -22,25 +23,26 @@ export default async function TechPartners() {
       </div>
 
       <div className="relative z-10">
-        {/* Header Section */}
-        <AnimateOnScroll>
-          <div className="text-center max-w-4xl mx-auto mb-12">
-            {/* Title */}
-            <h2 className="text-3xl md:text-5xl font-bold mb-6 leading-tight">
-              Our Big Tech <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Partners</span>
+        <SectionHeader
+          title={
+            <>
+              Our Big Tech{" "}
+              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                Partners
+              </span>
               <br />
               <span className="text-2xl md:text-4xl text-gray-600 font-semibold">
                 Help You Make Right Career Choices
               </span>
-            </h2>
-
-            {/* Subtitle */}
-            <p className="text-base md:text-lg text-gray-600 leading-relaxed max-w-3xl mx-auto">
+            </>
+          }
+          subtitle={
+            <>
               Our instructors will not only make your fundamentals strong but also make you understand the{" "}
               <span className="font-semibold text-primary">real-time importance</span> of the industries.
-            </p>
-          </div>
-        </AnimateOnScroll>
+            </>
+          }
+        />
 
         {/* Logo Grid */}
         <AnimateOnScroll delay={200}>
@@ -48,10 +50,11 @@ export default async function TechPartners() {
             {companies.map((company, index) => (
               <div
                 key={index}
-                className="group relative bg-white rounded-2xl p-6 md:p-8 border border-gray-100 hover:border-primary/30 shadow-sm hover:shadow-xl transition-all duration-300 hover:scale-105"
+                className="group relative bg-white rounded-2xl p-6 md:p-8 border border-gray-100 hover:border-primary/30 shadow-sm hover:shadow-2xl transition-all duration-500 hover:scale-105 hover:-translate-y-1 will-change-transform"
               >
-                {/* Glow Effect */}
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/0 to-accent/0 group-hover:from-primary/5 group-hover:to-accent/5 transition-all duration-300" />
+                {/* Enhanced Glow Effect */}
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/0 to-accent/0 group-hover:from-primary/10 group-hover:to-accent/10 transition-all duration-500" />
+                <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 bg-gradient-to-tr from-transparent via-primary/5 to-transparent transition-all duration-500" />
                 
                 {/* Logo */}
                 <div className="relative flex items-center justify-center h-16 md:h-20">
@@ -60,11 +63,13 @@ export default async function TechPartners() {
                     src={company}
                     width={208}
                     height={80}
-                    className="object-contain w-full h-full grayscale  group-hover:grayscale-0 opacity-60 group-hover:opacity-100 transition-all duration-300"
+                    className="object-contain w-full h-full grayscale group-hover:grayscale-0 opacity-60 group-hover:opacity-100 transition-all duration-500 group-hover:scale-110"
                   />
                 </div>
 
-                </div>
+                {/* Hover Border Accent */}
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-accent scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-b-2xl" />
+              </div>
             ))}
           </div>
         </AnimateOnScroll>

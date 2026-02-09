@@ -131,6 +131,26 @@ export default async function Footer() {
         </nav>
       </div>
 
+      {/* Map Section */}
+      <div className="mt-12 mb-8">
+        <div className="w-full h-[400px] rounded-2xl overflow-hidden border-2 border-gray-200 shadow-lg">
+          <iframe
+            src={`https://maps.google.com/maps?q=${encodeURIComponent(address)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+            width="100%"
+            height="100%"
+            style={{ border: 0 }}
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            title="Office Location"
+            className="grayscale-[30%] hover:grayscale-0 transition-all duration-500"
+          />
+        </div>
+        <p className="text-center mt-4 text-sm text-gray-600">
+          📍 {address}
+        </p>
+      </div>
+
       <div className="p-6 text-base-content text-sm flex justify-center mt-16 pt-8 border-t border-gray-500/20">
         {`Copyright ©${new Date().getFullYear()} i2i Industry. All Rights Reserved.`}
       </div>

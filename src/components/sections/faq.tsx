@@ -2,6 +2,7 @@ import { getFAQData } from "@/lib/contentful/client";
 import { ContactUsButton } from "@/components/forms/contact-form";
 import Container from "@/components/ui/container";
 import AnimateOnScroll from "@/components/ui/animate-on-scroll";
+import SectionHeader from "@/components/ui/section-header";
 
 export default async function FAQ() {
   const r = await getFAQData();
@@ -13,13 +14,25 @@ export default async function FAQ() {
     <Container className="py-20 gap-12">
       {/* Left Content */}
       <AnimateOnScroll className="flex flex-col gap-6 flex-1 px-0 lg:px-16 min-w-[40%]">
-        <h4 className="text-4xl lg:text-6xl font-bold">
-          Frequently Asked <br />{" "}
-          <span className="text-primary">Questions</span>
-        </h4>
-        <p className="mt-2 text-xl text-gray-500 font-medium">
-          Still have doubts?
-        </p>
+        <div className="text-left">
+          <SectionHeader
+            align="left"
+            title={
+              <>
+                Frequently Asked{" "}
+                <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                  Questions
+                </span>
+              </>
+            }
+            subtitle={
+              <>
+                <span className="font-semibold text-primary">Still have doubts?</span> We&apos;re here to help!
+              </>
+            }
+            className="mb-8"
+          />
+        </div>
         <ContactUsButton
           text="Book A Call"
           className="max-w-full md:max-w-[50%]"
