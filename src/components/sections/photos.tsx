@@ -20,6 +20,18 @@ export default function PhotosAndImages() {
     });
   }, []);
 
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (selectedIndex !== null) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [selectedIndex]);
+
   const openModal = (index: number) => {
     setSelectedIndex(index);
   };
@@ -96,7 +108,7 @@ export default function PhotosAndImages() {
       {/* Photo Modal */}
       {selectedIndex !== null && (
         <div 
-          className="fixed inset-0 z-50 bg-black/95 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200"
           onClick={closeModal}
         >
           {/* Close Button */}

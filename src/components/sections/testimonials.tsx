@@ -24,6 +24,18 @@ export default function Testimonials() {
   const [isPaused, setIsPaused] = useState(false);
   const [selectedTestimonial, setSelectedTestimonial] = useState<Testimonial | null>(null);
 
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (selectedTestimonial) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [selectedTestimonial]);
+
   const [sliderRef, instanceRef] = useKeenSlider({
     breakpoints: {
       "(min-width: 450px)": {
@@ -75,6 +87,7 @@ export default function Testimonials() {
   }, [data, startAutoPlay]);
 
   return (
+    <>
     <section className="w-full px-8 py-16 flex flex-col items-center bg-gradient-to-b from-white via-accent/5 to-white relative overflow-hidden">
       {/* Decorative Background Elements */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -149,6 +162,8 @@ export default function Testimonials() {
           <HiChevronRight className="w-6 h-6" />
         </button>
       </div>
+      </div>
+    </section>
 
       {/* Testimonial Modal */}
       {selectedTestimonial && (
@@ -226,8 +241,7 @@ export default function Testimonials() {
           </div>
         </div>
       )}
-      </div>
-    </section>
+    </>
   );
 }
 

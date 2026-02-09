@@ -132,7 +132,7 @@ export default async function Footer() {
       </div>
 
       {/* Map Section */}
-      <div className="mt-12 mb-8">
+      <div className="mt-12">
         <div className="w-full h-[400px] rounded-2xl overflow-hidden border-2 border-gray-200 shadow-lg">
           <iframe
             src={`https://maps.google.com/maps?q=${encodeURIComponent(address)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}

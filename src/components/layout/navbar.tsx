@@ -135,7 +135,7 @@ export default function NavBar() {
         className={cn(
           "w-full flex items-center justify-between px-6 lg:px-16 transition-all duration-300 border-b",
           isScrolled
-            ? "h-20 bg-white/40 backdrop-blur-xl shadow-md border-white/20"
+            ? "h-20 bg-white/60 backdrop-blur-xl shadow-md border-black"
             : "h-20 bg-white/95 backdrop-blur-sm border-gray-200"
         )}
       >
@@ -213,7 +213,7 @@ export default function NavBar() {
       {/* ── Courses Dropdown (outside nav so backdrop-blur works) ── */}
       <div
         className={cn(
-          "fixed w-96 bg-white/50 backdrop-blur-xl rounded-xl shadow-2xl border border-white/40 overflow-hidden z-[60] transition-all duration-300",
+          "fixed w-96 bg-white/50 backdrop-blur-xl rounded-xl shadow-2xl border-2 border-black overflow-hidden z-[60] transition-all duration-300",
           coursesDropdownOpen
             ? "opacity-100 scale-100 pointer-events-auto transition-opacity duration-300"
             : "opacity-0 scale-95 pointer-events-none"
