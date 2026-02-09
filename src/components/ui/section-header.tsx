@@ -34,19 +34,22 @@ export default function SectionHeader({
     <AnimateOnScroll>
       <div
         className={cn(
-          "text-center max-w-4xl mx-auto mb-12",
-          align === "left" && "text-left",
+          "max-w-4xl mb-12",
+          align === "center" ? "text-center mx-auto" : "text-left",
           className
         )}
       >
         {/* Title */}
-        <h2 className="text-3xl md:text-5xl font-bold mb-6 leading-tight">
+        <h2 className="text-3xl md:text-5xl font-black mb-6 leading-tight md:leading-snug tracking-tight">
           {title}
         </h2>
 
         {/* Subtitle */}
         {subtitle && (
-          <p className="text-base md:text-md text-gray-600 leading-relaxed max-w-3xl mx-auto">
+          <p className={cn(
+            "text-base md:text-lg text-gray-600 leading-relaxed max-w-3xl",
+            align === "center" ? "mx-auto" : ""
+          )}>
             {subtitle}
           </p>
         )}
