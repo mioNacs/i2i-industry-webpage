@@ -77,114 +77,116 @@ export default function JobSearch({
         />
       </div>
 
-      <div className="flex flex-col md:flex-row gap-3">
-        <div className="relative flex-1">
-          <button
-            onClick={() => {
-              setShowLocationDropdown(!showLocationDropdown);
-              setShowSalaryDropdown(false);
-            }}
-            className="w-full flex items-center justify-between px-4 py-2.5 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors text-left"
-          >
-            <div className="flex items-center gap-2">
-              <LuMapPin className="w-4 h-4 text-gray-500" />
-              <span className="text-sm">
-                {selectedLocation || "All Locations"}
-              </span>
-            </div>
-            <LuChevronDown
-              className={`w-4 h-4 text-gray-500 transition-transform ${
-                showLocationDropdown ? "rotate-180" : ""
-              }`}
-            />
-          </button>
+      <div className="space-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="relative">
+            <button
+              onClick={() => {
+                setShowLocationDropdown(!showLocationDropdown);
+                setShowSalaryDropdown(false);
+              }}
+              className="w-full flex items-center justify-between px-4 py-2.5 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors text-left"
+            >
+              <div className="flex items-center gap-2">
+                <LuMapPin className="w-4 h-4 text-gray-500" />
+                <span className="text-sm">
+                  {selectedLocation || "All Locations"}
+                </span>
+              </div>
+              <LuChevronDown
+                className={`w-4 h-4 text-gray-500 transition-transform ${
+                  showLocationDropdown ? "rotate-180" : ""
+                }`}
+              />
+            </button>
 
-          {showLocationDropdown && (
-            <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
-              <div className="max-h-64 overflow-y-auto">
-                <button
-                  onClick={() => handleLocationChange("")}
-                  className={`w-full text-left px-4 py-2.5 hover:bg-gray-50 text-sm transition-colors ${
-                    !selectedLocation ? "bg-blue-50 text-primary" : ""
-                  }`}
-                >
-                  All Locations
-                </button>
-                {locations.map((location) => (
+            {showLocationDropdown && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+                <div className="max-h-64 overflow-y-auto">
                   <button
-                    key={location}
-                    onClick={() => handleLocationChange(location)}
+                    onClick={() => handleLocationChange("")}
                     className={`w-full text-left px-4 py-2.5 hover:bg-gray-50 text-sm transition-colors ${
-                      selectedLocation === location
-                        ? "bg-blue-50 text-primary"
-                        : ""
+                      !selectedLocation ? "bg-blue-50 text-primary" : ""
                     }`}
                   >
-                    {location}
+                    All Locations
                   </button>
-                ))}
+                  {locations.map((location) => (
+                    <button
+                      key={location}
+                      onClick={() => handleLocationChange(location)}
+                      className={`w-full text-left px-4 py-2.5 hover:bg-gray-50 text-sm transition-colors ${
+                        selectedLocation === location
+                          ? "bg-blue-50 text-primary"
+                          : ""
+                      }`}
+                    >
+                      {location}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
 
-        <div className="relative flex-1">
-          <button
-            onClick={() => {
-              setShowSalaryDropdown(!showSalaryDropdown);
-              setShowLocationDropdown(false);
-            }}
-            className="w-full flex items-center justify-between px-4 py-2.5 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors text-left"
-          >
-            <div className="flex items-center gap-2">
-              <LuDollarSign className="w-4 h-4 text-gray-500" />
-              <span className="text-sm">
-                {selectedSalary || "All Salaries"}
-              </span>
-            </div>
-            <LuChevronDown
-              className={`w-4 h-4 text-gray-500 transition-transform ${
-                showSalaryDropdown ? "rotate-180" : ""
-              }`}
-            />
-          </button>
+          <div className="relative">
+            <button
+              onClick={() => {
+                setShowSalaryDropdown(!showSalaryDropdown);
+                setShowLocationDropdown(false);
+              }}
+              className="w-full flex items-center justify-between px-4 py-2.5 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors text-left"
+            >
+              <div className="flex items-center gap-2">
+                <LuDollarSign className="w-4 h-4 text-gray-500" />
+                <span className="text-sm">
+                  {selectedSalary || "All Salaries"}
+                </span>
+              </div>
+              <LuChevronDown
+                className={`w-4 h-4 text-gray-500 transition-transform ${
+                  showSalaryDropdown ? "rotate-180" : ""
+                }`}
+              />
+            </button>
 
-          {showSalaryDropdown && (
-            <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
-              <div className="max-h-64 overflow-y-auto">
-                <button
-                  onClick={() => handleSalaryChange("")}
-                  className={`w-full text-left px-4 py-2.5 hover:bg-gray-50 text-sm transition-colors ${
-                    !selectedSalary ? "bg-blue-50 text-primary" : ""
-                  }`}
-                >
-                  All Salaries
-                </button>
-                {salaryRanges.map((range) => (
+            {showSalaryDropdown && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+                <div className="max-h-64 overflow-y-auto">
                   <button
-                    key={range}
-                    onClick={() => handleSalaryChange(range)}
+                    onClick={() => handleSalaryChange("")}
                     className={`w-full text-left px-4 py-2.5 hover:bg-gray-50 text-sm transition-colors ${
-                      selectedSalary === range
-                        ? "bg-blue-50 text-primary"
-                        : ""
+                      !selectedSalary ? "bg-blue-50 text-primary" : ""
                     }`}
                   >
-                    {range}
+                    All Salaries
                   </button>
-                ))}
+                  {salaryRanges.map((range) => (
+                    <button
+                      key={range}
+                      onClick={() => handleSalaryChange(range)}
+                      className={`w-full text-left px-4 py-2.5 hover:bg-gray-50 text-sm transition-colors ${
+                        selectedSalary === range
+                          ? "bg-blue-50 text-primary"
+                          : ""
+                      }`}
+                    >
+                      {range}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         {hasActiveFilters && (
           <button
             onClick={clearFilters}
-            className="flex items-center gap-2 px-4 py-2.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors text-sm font-medium"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors text-sm font-medium border border-red-200"
           >
             <LuX className="w-4 h-4" />
-            Clear
+            <span>Clear All Filters</span>
           </button>
         )}
       </div>

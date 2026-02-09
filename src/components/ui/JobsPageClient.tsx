@@ -69,7 +69,7 @@ export default function JobsPageClient({ jobs }: JobsPageClientProps) {
         <div className="space-y-8 lg:sticky lg:top-24">
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
             <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
-              ⚙️ Filter Jobs
+               Filter Jobs
             </h2>
             <JobSearch
               onSearch={setSearchQuery}
@@ -81,7 +81,7 @@ export default function JobsPageClient({ jobs }: JobsPageClientProps) {
 
           <div className="bg-gradient-to-br from-accent/10 via-white to-secondary/30 p-6 rounded-xl shadow-sm border border-accent/20">
             <h3 className="font-semibold text-gray-900 text-lg mb-3">
-              📚 Boost Your Skills
+               Boost Your Skills
             </h3>
             <p className="text-sm text-gray-700 mb-4 leading-relaxed">
               Our professionally curated courses will help you land your dream job faster.

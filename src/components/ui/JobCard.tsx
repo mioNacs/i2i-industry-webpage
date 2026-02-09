@@ -43,7 +43,8 @@ export default function JobCard({
   const [isSaved, setIsSaved] = useState(false);
   const drawerId = `jd-drawer-${index}`;
 
-  const toggleDrawer = () => {
+  const toggleDrawer = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
     const drawer = document.getElementById(drawerId) as HTMLInputElement | null;
     if (drawer) {
       drawer.checked = !drawer.checked;
@@ -63,8 +64,7 @@ export default function JobCard({
 
       <div className="drawer-content">
         <div
-          onClick={toggleDrawer}
-          className="group bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-primary/30 transition-all duration-300 cursor-pointer hover:translate-y-[-2px]"
+          className="group bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-primary/30 transition-all duration-300 hover:translate-y-[-2px]"
         >
           <div className="flex gap-5">
             {/* Company Logo */}
@@ -130,7 +130,7 @@ export default function JobCard({
 
                 {/* Save Button */}
                 <button
-                  onClick={toggleSave}
+                  onClick={(e) => toggleSave(e)}
                   className="flex-shrink-0 p-2 rounded-lg hover:bg-gray-100 transition-colors"
                   aria-label="Save job"
                 >
@@ -146,7 +146,7 @@ export default function JobCard({
 
               {/* Apply Button */}
               <button
-                onClick={toggleDrawer}
+                onClick={(e) => toggleDrawer(e)}
                 className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-700 font-medium text-sm transition-all hover:gap-3"
               >
                 View Details
@@ -269,6 +269,37 @@ function JobDescription({
             <p className="text-lg font-bold text-gray-900 mt-2 capitalize">
               Full-time
             </p>
+          </div>
+        </div>
+
+        {/* Apply Section */}
+        <div className="space-y-3 w-full">
+          <h2 className="text-xl font-bold text-gray-900">Apply</h2>
+          <div className="bg-gradient-to-br from-blue-50/50 to-transparent border border-blue-200 rounded-xl p-6">
+            <p className="text-gray-700 leading-relaxed mb-4">
+              Please share your Resume at{" "}
+              <a
+                href="mailto:info@i2iindustry.com"
+                className="text-primary hover:underline font-semibold"
+              >
+                info@i2iindustry.com
+              </a>{" "}
+              with the following Details:
+            </p>
+            <ul className="space-y-2 text-gray-700">
+              <li className="flex items-start gap-2">
+                <span className="text-primary font-bold mt-0.5">•</span>
+                <span>Name Of Company</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-primary font-bold mt-0.5">•</span>
+                <span>Name Of Position</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-primary font-bold mt-0.5">•</span>
+                <span>Resume</span>
+              </li>
+            </ul>
           </div>
         </div>
 
