@@ -9,15 +9,22 @@ export default async function JobsPage() {
   return (
     <div className="w-full min-h-screen font-sans bg-gray-50/50">
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-secondary via-secondary/50 to-blue-50 p-8 md:p-16 lg:p-20 space-y-6 border-b border-gray-200">
-        <div className="max-w-3xl">
-          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight mb-4">
-            Find Your Next Career <br />
-            <span className="text-primary">Within Minutes</span>
-          </h1>
-          <p className="text-lg text-gray-700 max-w-2xl">
-            Discover amazing job opportunities from top companies. Apply in seconds and land your dream role.
-          </p>
+      <div className="bg-gradient-to-br from-secondary via-secondary/50 to-blue-50 p-6 md:p-10 lg:p-14 border-b border-gray-200">
+        <div className="container mx-auto">
+          <div className="bg-gradient-to-br from-accent/10 via-white to-secondary/30 rounded-2xl border border-accent/20 shadow-sm p-8 md:p-10">
+            <div className="max-w-3xl">
+              <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-primary bg-primary/10 px-3 py-1 rounded-full">
+                Careers Hub
+              </span>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mt-4 mb-4">
+                Find Your Next Career <br />
+                <span className="text-primary">Within Minutes</span>
+              </h1>
+              <p className="text-base md:text-lg text-gray-700 max-w-2xl">
+                Discover amazing job opportunities from top companies. Apply in seconds and land your dream role.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
