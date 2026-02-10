@@ -1,5 +1,6 @@
 import { getHeroSection } from "@/lib/contentful/client";
 import Image from "next/image";
+import Link from "next/link";
 import { IoMdStar } from "react-icons/io";
 import HeroImage from "../../../public/hero2.png";
 import { ContactUsButton } from "@/components/forms/contact-form";
@@ -44,9 +45,12 @@ export default async function Hero() {
                 text="Start Your Journey" 
                 className="btn-lg px-8 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 text-white border-0 bg-accent"
               />
-              <button className="btn border-none shadow-xl hover:shadow-2xl text-white bg-primary hover:bg-accent px-8 scale-105 hover:scale-110 transition-all duration-200">
+              <Link
+                href="/course"
+                className="btn border-none shadow-xl hover:shadow-2xl text-white bg-primary hover:bg-accent px-8 scale-105 hover:scale-110 transition-all duration-200"
+              >
                 View Courses
-              </button>
+              </Link>
             </div>
           </AnimateOnScroll>
         </div>
