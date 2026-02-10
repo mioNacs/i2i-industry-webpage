@@ -4,6 +4,7 @@ import { JobItem } from "@/lib/contentful/types/job.d";
 import Image from "next/image";
 import React, { useState } from "react";
 import { LuArrowRight, LuBookmark, LuClock, LuMapPin } from "react-icons/lu";
+import JobDescriptionSections from "./JobDescriptionSections";
 
 const getTimeAgo = (dateString: string): string => {
   const date = new Date(dateString).getTime();
@@ -303,10 +304,9 @@ function JobDescription({
           </div>
         </div>
 
-        {/* Overview */}
-        <div className="space-y-3">
-          <h2 className="text-xl font-bold text-gray-900">About this role</h2>
-          <p className="text-gray-700 leading-relaxed">{job.jobOverview}</p>
+        {/* Overview with Collapsible Sections */}
+        <div className="w-full">
+          <JobDescriptionSections jobOverview={job.jobOverview} />
         </div>
 
         {/* What we're looking for */}
