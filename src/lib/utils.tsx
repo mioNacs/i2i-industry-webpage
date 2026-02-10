@@ -1,4 +1,5 @@
 import { twMerge } from "tailwind-merge";
+import React from "react";
 
 /** Merge Tailwind classes with conflict resolution */
 export function cn(...inputs: (string | undefined | false | null)[]) {
@@ -32,4 +33,33 @@ export function getTimeAgo(dateString: string): string {
   if (diff < month) return `${Math.floor(diff / day)} days ago`;
   if (diff < year) return `${Math.floor(diff / month)} months ago`;
   return `${Math.floor(diff / year)} years ago`;
+}
+
+/** 
+ * Highlight specific words in a text string.
+ * Returns an array of ReactMap nodes.
+ */
+export function highlightWords(text: string, highlights: string[]) {
+    if (!highlights || highlights.length === 0) return text;
+  
+    // Create a safe regex pattern
+    const escapedHighlights = highlights.map(h => h.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    const pattern = new RegExp(`(${escapedHighlights.join("|")})`, "gi");
+    
+    // Split and map
+    const parts = text.split(pattern);
+    
+    return parts.map((part, index) => {
+        // Check if this part matches any highlight word (case insensitive)
+        const isHighlight = highlights.some(h => h.toLowerCase() === part.toLowerCase());
+        
+        if (isHighlight) {
+            return (
+                <span key={index} className="text-secondary">
+                    {part}
+                </span>
+            );
+        }
+        return part;
+    });
 }
