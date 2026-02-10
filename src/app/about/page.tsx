@@ -43,7 +43,7 @@ export default async function AboutPage() {
     const MOCK_FOUNDER_KAUSHAL = {
         name: "Kaushal Kumar",
         designation: "Co-Founder",
-        description: "Technical architect driving the innovation at i2i...",
+        description: "Kaushal brings a unique and essential perspective as an accomplished leader. His deep understanding of mine planning, scheduling, and project management has been pivotal in improving productivity and efficiency. Kaushal has about seven year industry experience in top MNC, Adani, Hindalco and DVC. He has expertise in project management, organised training program for better skill development in organization. Kaushal's enthusiasm and technical proficiency exemplify his commitment to excellence.",
         photo: { url: "/img_kaushal.jpg" }, // Using local public image
         linkedIn: "https://linkedin.com/in/kaushal"
     };
