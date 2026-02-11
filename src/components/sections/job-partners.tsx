@@ -86,7 +86,7 @@ function MarqueeRow({
             <div className="absolute inset-0 bg-gradient-to-br from-accent/10 via-white to-accent/10 rounded-xl opacity-0 group-hover/logo:opacity-100 transition-opacity duration-300" />
             
             {/* Logo Image */}
-            <div className="relative border-2 border-accent hover:border-primary rounded-xl px-6 py-4 shadow-sm group-hover/logo:shadow-xl transition-all duration-300">
+            <div className="relative border-2 border-accent bg-accent/5 hover:border-primary rounded-xl px-6 py-4 shadow-sm group-hover/logo:shadow-xl transition-all duration-300">
               <Image
                 src={e.icon}
                 width={width}
@@ -108,7 +108,7 @@ function MarqueeRow({
             <div className="absolute inset-0 bg-gradient-to-br from-accent/10 via-white to-accent/10 rounded-xl opacity-0 group-hover/logo:opacity-100 transition-opacity duration-300" />
             
             {/* Logo Image */}
-            <div className="relative border-2 border-accent hover:border-primary rounded-xl px-6 py-4 shadow-sm group-hover/logo:shadow-xl transition-all duration-300">
+            <div className="relative border-2 border-accent bg-accent/5 hover:border-primary rounded-xl px-6 py-4 shadow-sm group-hover/logo:shadow-xl transition-all duration-300">
               <Image
                 src={e.icon}
                 width={width}

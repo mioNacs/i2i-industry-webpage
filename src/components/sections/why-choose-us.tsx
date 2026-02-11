@@ -56,35 +56,29 @@ export default async function WhyChooseUs() {
             const Icon = featureIcons[index % featureIcons.length];
             return (
               <AnimateOnScroll key={index} delay={index * 0.1}>
-                <div className="group relative bg-white rounded-2xl border-2 border-accent hover:border-primary hover:shadow-2xl transition-all duration-300 hover:scale-105 h-full cursor-pointer">
-                  {/* Glow Effect */}
-                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/0 to-accent/0 group-hover:from-primary/5 group-hover:to-accent/5 transition-all duration-300 pointer-events-none" />
-                  
-                  <div className="relative p-4 md:p-6 flex flex-col items-center justify-center h-full min-h-[200px]">
-                    {/* Icon Container */}
-                    <div className="mb-4">
-                      <div className="w-20 h-20 bg-gradient-to-br from-primary/10 to-accent/10 rounded-2xl flex items-center justify-center transform group-hover:scale-110 transition-all duration-300">
-                        <Icon className="w-10 h-10 text-primary" />
-                      </div>
-                    </div>
-
-                    {/* Title */}
-                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-primary transition-colors text-center">
-                      {feature.title}
-                    </h3>
-
-                    {/* Hover Tooltip */}
-                    <div className="absolute inset-x-0 bottom-full mb-2 px-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                      <div className="bg-gray-900 text-white text-sm p-4 rounded-xl shadow-2xl relative">
-                        <p className="leading-relaxed">{feature.description}</p>
-                        {/* Arrow */}
-                        <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-px">
-                          <div className="border-8 border-transparent border-t-gray-900"></div>
+                 {/* Card Container with Perspective */}
+                <div className="group h-[320px] [perspective:1000px]">
+                    {/* Flipping Inner Container */}
+                    <div className="relative w-full h-full transition-all duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(170deg)] rounded-2xl shadow-sm hover:shadow-xl">
+                        
+                        {/* Front Face */}
+                        <div className="absolute inset-0 w-full h-full [backface-visibility:hidden] bg-white rounded-2xl border-2 border-accent p-6 flex flex-col items-center justify-center z-20">
+                             <div className="w-20 h-20 bg-primary/5 border-2 border-primary rounded-2xl flex items-center justify-center mb-6">
+                                <Icon className="w-10 h-10 text-primary" />
+                             </div>
+                             <h3 className="text-xl font-bold text-gray-900 text-center px-4 leading-tight">
+                                {feature.title}
+                             </h3>
                         </div>
-                      </div>
+
+                        {/* Back Face */}
+                        <div className="absolute inset-0 w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] bg-accent/5 rounded-2xl p-6 flex flex-col items-center justify-center text-center z-10 border-2 border-accent">
+                             <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-white/20 pb-2 w-full">{feature.title}</h3>
+                             <p className="text-gray-800 leading-relaxed text-sm font-medium">
+                                {feature.description}
+                             </p>
+                        </div>
                     </div>
-                    
-                   </div>
                 </div>
               </AnimateOnScroll>
             );
