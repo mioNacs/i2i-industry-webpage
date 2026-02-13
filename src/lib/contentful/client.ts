@@ -18,28 +18,48 @@ import type { FaqResponse } from "./types/faq";
 import type JobsResponse from "./types/job";
 
 // ── Env-based config (no more hardcoded secrets) ──────────────────────
-const space = process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID!;
-const accessToken = process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN!;
+const space = process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID;
+const accessToken = process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN;
+
+if (!space || !accessToken) {
+  throw new Error(
+    "Contentful configuration missing. Please set NEXT_PUBLIC_CONTENTFUL_SPACE_ID and NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN environment variables."
+  );
+}
 
 async function fetchGraphQL<T>(query: string): Promise<T> {
-  const res = await fetch(
-    `https://graphql.contentful.com/content/v1/spaces/${space}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ query }),
-      next: { revalidate: 120 },
+  try {
+    const res = await fetch(
+      `https://graphql.contentful.com/content/v1/spaces/${space}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ query }),
+        next: { revalidate: 120 },
+      }
+    );
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(`Contentful API error: ${res.status} ${res.statusText} - ${errorText}`);
     }
-  );
 
-  if (!res.ok) {
-    throw new Error(`Contentful API error: ${res.status} ${res.statusText}`);
+    const json = await res.json();
+    if (json.errors) {
+      console.error("GraphQL Errors:", json.errors);
+      // Depending on requirements, you might want to throw here or return partial data
+      // For now, let's log and throw to avoid silent failures on data display
+      throw new Error(`GraphQL Error: ${json.errors.map((e: any) => e.message).join(', ')}`);
+    }
+
+    return json;
+  } catch (error) {
+    console.error("Failed to fetch from Contentful:", error);
+    throw error; // Re-throw to be handled by the caller or Next.js error boundary
   }
-
-  return res.json();
 }
 
 // ── Query helpers ─────────────────────────────────────────────────────
@@ -158,7 +178,7 @@ export async function getJobsData() {
   return fetchGraphQL<JobsResponse>(`query {
     jobCollection {
       items {
-        sys { firstPublishedAt },
+        sys { firstPublishedAt, id },
         name, location, salary, jobOverview,
         companyIcon { url }, companyName
       }
