@@ -75,10 +75,10 @@ function MarqueeRow({
           reverse ? "animate-marquee2" : "animate-marquee"
         } group-hover:[animation-play-state:paused] whitespace-nowrap flex gap-8 md:gap-12`}
       >
-        {/* Original set */}
+        {/* Set 1 */}
         {icons.map((e, idx) => (
           <div
-            key={e.name + idx}
+            key={e.name + idx + "-1"}
             className="relative flex-shrink-0 group/logo transition-all duration-300 hover:scale-105 hover:z-10"
           >
             {/* Card Background with Glow */}
@@ -97,17 +97,52 @@ function MarqueeRow({
             </div>
           </div>
         ))}
-        {/* Duplicated set for seamless loop */}
+        {/* Set 2 */}
         {icons.map((e, idx) => (
           <div
-            key={e.name + "-dup" + idx}
+            key={e.name + idx + "-2"}
             className="relative flex-shrink-0 group/logo transition-all duration-300 hover:scale-105 hover:z-10"
           >
-            {/* Card Background with Glow */}
             <div className="absolute inset-0 bg-white rounded-xl opacity-0 group-hover/logo:opacity-100 transition-opacity duration-300 shadow-lg" />
             <div className="absolute inset-0 bg-gradient-to-br from-accent/10 via-white to-accent/10 rounded-xl opacity-0 group-hover/logo:opacity-100 transition-opacity duration-300" />
-            
-            {/* Logo Image */}
+            <div className="relative border-2 border-accent bg-accent/5 hover:border-primary rounded-xl px-6 py-4 shadow-sm group-hover/logo:shadow-xl transition-all duration-300">
+              <Image
+                src={e.icon}
+                width={width}
+                height={height}
+                alt={e.name}
+                className="w-[180px] md:w-[220px] h-[36px] md:h-[44px] object-contain grayscale/50 group-hover/logo:grayscale-0 group-hover/logo:opacity-100 transition-all duration-300"
+              />
+            </div>
+          </div>
+        ))}
+        {/* Set 3 */}
+        {icons.map((e, idx) => (
+          <div
+            key={e.name + idx + "-3"}
+            className="relative flex-shrink-0 group/logo transition-all duration-300 hover:scale-105 hover:z-10"
+          >
+            <div className="absolute inset-0 bg-white rounded-xl opacity-0 group-hover/logo:opacity-100 transition-opacity duration-300 shadow-lg" />
+            <div className="absolute inset-0 bg-gradient-to-br from-accent/10 via-white to-accent/10 rounded-xl opacity-0 group-hover/logo:opacity-100 transition-opacity duration-300" />
+            <div className="relative border-2 border-accent bg-accent/5 hover:border-primary rounded-xl px-6 py-4 shadow-sm group-hover/logo:shadow-xl transition-all duration-300">
+              <Image
+                src={e.icon}
+                width={width}
+                height={height}
+                alt={e.name}
+                className="w-[180px] md:w-[220px] h-[36px] md:h-[44px] object-contain grayscale/50 group-hover/logo:grayscale-0 group-hover/logo:opacity-100 transition-all duration-300"
+              />
+            </div>
+          </div>
+        ))}
+        {/* Set 4 */}
+        {icons.map((e, idx) => (
+          <div
+            key={e.name + idx + "-4"}
+            className="relative flex-shrink-0 group/logo transition-all duration-300 hover:scale-105 hover:z-10"
+          >
+            <div className="absolute inset-0 bg-white rounded-xl opacity-0 group-hover/logo:opacity-100 transition-opacity duration-300 shadow-lg" />
+            <div className="absolute inset-0 bg-gradient-to-br from-accent/10 via-white to-accent/10 rounded-xl opacity-0 group-hover/logo:opacity-100 transition-opacity duration-300" />
             <div className="relative border-2 border-accent bg-accent/5 hover:border-primary rounded-xl px-6 py-4 shadow-sm group-hover/logo:shadow-xl transition-all duration-300">
               <Image
                 src={e.icon}

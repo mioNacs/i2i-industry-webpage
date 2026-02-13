@@ -57,24 +57,37 @@ export default async function WhyChooseUs() {
             return (
               <AnimateOnScroll key={index} delay={index * 0.1}>
                  {/* Card Container with Perspective */}
-                <div className="group h-[320px] [perspective:1000px]">
+                <div className="group h-[280px] [perspective:1000px]">
                     {/* Flipping Inner Container */}
-                    <div className="relative w-full h-full transition-all duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(170deg)] rounded-2xl shadow-sm hover:shadow-xl">
+                    <div className="relative w-full h-full transition-all duration-500 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)] rounded-lg shadow-sm hover:shadow-xl border-2 border-gray-200">
                         
                         {/* Front Face */}
-                        <div className="absolute inset-0 w-full h-full [backface-visibility:hidden] bg-white rounded-2xl border-2 border-accent p-6 flex flex-col items-center justify-center z-20">
-                             <div className="w-20 h-20 bg-primary/5 border-2 border-primary rounded-2xl flex items-center justify-center mb-6">
-                                <Icon className="w-10 h-10 text-primary" />
+                        <div className="absolute inset-0 w-full h-full [backface-visibility:hidden] bg-base-100 rounded-lg p-8 flex flex-col items-start justify-start z-20 overflow-hidden">
+                             {/* Decorative Blob */}
+                             <div className="absolute -top-24 -right-24 w-60 h-60 bg-orange-100/80 blur-md rounded-full pointer-events-none" />
+                             
+                             <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm relative z-10">
+                                <Icon className="w-8 h-8 text-orange-500" />
                              </div>
-                             <h3 className="text-xl font-bold text-gray-900 text-center px-4 leading-tight">
+                             
+                             <h3 className="text-xl font-bold text-gray-900 mb-3 relative z-10">
                                 {feature.title}
                              </h3>
+                             
+                             <p className="text-gray-600 text-sm leading-relaxed line-clamp-2 relative z-10">
+                                {feature.description}
+                             </p>
                         </div>
 
                         {/* Back Face */}
-                        <div className="absolute inset-0 w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] bg-accent/5 rounded-2xl p-6 flex flex-col items-center justify-center text-center z-10 border-2 border-accent">
-                             <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-white/20 pb-2 w-full">{feature.title}</h3>
-                             <p className="text-gray-800 leading-relaxed text-sm font-medium">
+                        <div className="absolute inset-0 w-full h-full [backface-visibility:hidden] [transform:rotateY(170deg)] bg-base-100 rounded-lg p-8 flex flex-col items-start justify-center z-10 overflow-hidden border-2 border-orange-100/50">
+                             {/* Enlarged Decorative Blob */}
+                             <div className="absolute -top-12 -right-12 w-64 h-64 bg-orange-200/80 rounded-full pointer-events-none transition-all duration-1000 ease-out origin-top-right scale-0 group-hover:scale-100" />
+                             
+                             <h3 className="text-lg font-bold text-gray-900 mb-4 pb-2 w-full relative z-10">
+                                {feature.title}
+                             </h3>
+                             <p className="text-gray-700 leading-relaxed text-sm relative z-10">
                                 {feature.description}
                              </p>
                         </div>

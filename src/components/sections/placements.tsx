@@ -44,10 +44,10 @@ export default function Placements() {
         {/* Enhanced Marquee with Pause on Hover */}
         <div className="my-12 w-full overflow-hidden">
           <div className="flex gap-8 animate-marquee hover:[animation-play-state:paused] whitespace-nowrap">
-            {/* Original set */}
+            {/* Set 1 */}
             {studentIcons.map((e, i) => (
               <div
-                key={"student" + i}
+                key={"student-1-" + i}
                 className="flex-shrink-0 group relative"
               >
                 <div className="relative w-40 h-40 rounded-2xl overflow-hidden border-2 border-gray-100 group-hover:border-primary/50 shadow-sm group-hover:shadow-xl transition-all duration-300 bg-white">
@@ -58,16 +58,14 @@ export default function Placements() {
                     height={160}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
-
-                  {/* Bottom Accent Bar */}
                   <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-accent scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
                 </div>
               </div>
             ))}
-            {/* Duplicated set for seamless loop */}
+            {/* Set 2 */}
             {studentIcons.map((e, i) => (
               <div
-                key={"student-dup" + i}
+                key={"student-2-" + i}
                 className="flex-shrink-0 group relative"
               >
                 <div className="relative w-40 h-40 rounded-2xl overflow-hidden border-2 border-gray-100 group-hover:border-primary/50 shadow-sm group-hover:shadow-xl transition-all duration-300 bg-white">
@@ -78,8 +76,42 @@ export default function Placements() {
                     height={160}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
-
-                  {/* Bottom Accent Bar */}
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-accent scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+                </div>
+              </div>
+            ))}
+            {/* Set 3 */}
+            {studentIcons.map((e, i) => (
+              <div
+                key={"student-3-" + i}
+                className="flex-shrink-0 group relative"
+              >
+                <div className="relative w-40 h-40 rounded-2xl overflow-hidden border-2 border-gray-100 group-hover:border-primary/50 shadow-sm group-hover:shadow-xl transition-all duration-300 bg-white">
+                  <Image
+                    src={e.icon}
+                    alt={`Placed student ${i + 1}`}
+                    width={160}
+                    height={160}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-accent scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+                </div>
+              </div>
+            ))}
+            {/* Set 4 */}
+            {studentIcons.map((e, i) => (
+              <div
+                key={"student-4-" + i}
+                className="flex-shrink-0 group relative"
+              >
+                <div className="relative w-40 h-40 rounded-2xl overflow-hidden border-2 border-gray-100 group-hover:border-primary/50 shadow-sm group-hover:shadow-xl transition-all duration-300 bg-white">
+                  <Image
+                    src={e.icon}
+                    alt={`Placed student ${i + 1}`}
+                    width={160}
+                    height={160}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
                   <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-accent scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
                 </div>
               </div>
