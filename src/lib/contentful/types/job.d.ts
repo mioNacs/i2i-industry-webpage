@@ -2,7 +2,7 @@ export default interface JobsResponse {
   data: { jobCollection: { items: JobItem[] } };
 }
 export interface JobItem {
-  sys: { firstPublishedAt: string };
+  sys: { firstPublishedAt: string; id: string };
   name: string;
   location: string;
   salary: string | null;

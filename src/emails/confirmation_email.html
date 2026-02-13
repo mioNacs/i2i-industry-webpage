@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confirm your signup</title>
+  <style>
+    /* Reset styles */
+    body { margin: 0; padding: 0; min-width: 100%; width: 100% !important; height: 100% !important; }
+    body, table, td, div, p, a { -webkit-font-smoothing: antialiased; text-size-adjust: 100%; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; line-height: 100%; }
+    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-collapse: collapse !important; border-spacing: 0; }
+    img { border: 0; line-height: 100%; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; }
+    #outlook a { padding: 0; }
+    .ReadMsgBody { width: 100%; } .ExternalClass { width: 100%; }
+    .ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div { line-height: 100%; }
+
+    /* Client-specific styles */
+    @media all and (max-width: 600px) {
+      .container { width: 100% !important; max-width: 100% !important; padding: 0 20px !important; }
+      .mobile-center { text-align: center !important; }
+    }
+  </style>
+</head>
+<body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #F7F7FA; margin: 0; padding: 0; color: #171717;">
+  
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="#F7F7FA">
+    <tr>
+      <td align="center" style="padding: 40px 0;">
+        
+        <!-- Main Container -->
+        <table role="presentation" class="container" width="600" cellspacing="0" cellpadding="0" border="0" style="width: 600px; max-width: 600px; margin: 0 auto;">
+          
+          <!-- Logo -->
+          <tr>
+            <td align="center" style="padding-bottom: 24px;">
+              <!-- Using text as fallback if logo doesn't load or isn't set up yet -->
+             <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: bold; font-size: 28px; color: #0E63FF; text-decoration: none;">
+                i2i
+              </div>
+            </td>
+          </tr>
+
+          <!-- Card -->
+          <tr>
+            <td bgcolor="#ffffff" style="background-color: #ffffff; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); padding: 48px;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                
+                <!-- Heading -->
+                <tr>
+                  <td align="center" style="padding-bottom: 24px;">
+                    <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #171717; letter-spacing: -0.025em;">
+                      Confirm your signup
+                    </h1>
+                  </td>
+                </tr>
+
+                <!-- Content -->
+                <tr>
+                  <td align="center" style="padding-bottom: 32px;">
+                    <p style="margin: 0; font-size: 16px; line-height: 26px; color: #4B5563;">
+                      Welcome to <strong>i2i</strong>! We're excited to have you on board. <br/>
+                      Please confirm your email address to verify your account and get started.
+                    </p>
+                  </td>
+                </tr>
+
+                <!-- Button -->
+                <tr>
+                  <td align="center" style="padding-bottom: 32px;">
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                      <tr>
+                        <td bgcolor="#0E63FF" style="background-color: #0E63FF; border-radius: 12px;">
+                          <a href="{{ .ConfirmationURL }}" target="_blank" style="display: inline-block; padding: 16px 32px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 16px; font-weight: 600; color: #ffffff; text-decoration: none; border: 1px solid #0E63FF; border-radius: 12px;">
+                            Confirm your mail
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <!-- Divider -->
+                <tr>
+                  <td style="padding-bottom: 32px;">
+                    <div style="height: 1px; background-color: #E5E7EB; width: 100%;"></div>
+                  </td>
+                </tr>
+
+                <!-- Fallback Link -->
+                <tr>
+                  <td align="center" style="padding-bottom: 16px;">
+                    <p style="margin: 0; font-size: 14px; line-height: 24px; color: #6B7280;">
+                      If the button doesn't work, copy and paste this link into your browser:
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="word-break: break-all;">
+                    <a href="{{ .ConfirmationURL }}" style="font-size: 14px; color: #0E63FF; text-decoration: none; word-break: break-all;">
+                      {{ .ConfirmationURL }}
+                    </a>
+                  </td>
+                </tr>
+
+                <!-- Expiry/Warning (Optional) -->
+                <!-- 
+                <tr>
+                  <td align="center" style="padding-top: 16px;">
+                    <p style="margin: 0; font-size: 12px; color: #9CA3AF;">
+                      This link will expire in 24 hours.
+                    </p>
+                  </td>
+                </tr>
+                -->
+
+              </table>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td align="center" style="padding-top: 24px;">
+              <p style="margin: 0; font-size: 13px; line-height: 20px; color: #9CA3AF;">
+                If you didn't request this email, you can safely ignore it.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

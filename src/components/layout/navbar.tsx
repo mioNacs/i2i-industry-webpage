@@ -7,6 +7,7 @@ import { FaChevronDown, FaChevronRight } from "react-icons/fa6";
 import { LuMail, LuPhone, LuMenu, LuX } from "react-icons/lu";
 import { getContact, getCourses } from "@/lib/contentful/client";
 import { ContactUsButton } from "@/components/forms/contact-form";
+import UserNav from "./user-nav";
 import { socialLinks, NAV_LINKS } from "@/lib/constants";
 import { useScrollDirection } from "@/hooks/use-scroll-direction";
 import { cn } from "@/lib/utils";
@@ -193,7 +194,7 @@ export default function NavBar() {
 
         {/* Desktop CTA */}
         <div className="hidden sm:flex items-center">
-          <ContactUsButton className="bg-blue-100 text-blue-700 hover:bg-blue-700 hover:text-white" />
+          <UserNav />
         </div>
 
         {/* Mobile Hamburger */}
@@ -299,7 +300,9 @@ export default function NavBar() {
           </div>
         </div>
 
-        <ContactUsButton className="mt-4" />
+        <div className="mt-4 flex flex-col items-center gap-4 w-full">
+          <UserNav />
+        </div>
       </div>
     </header>
   );
