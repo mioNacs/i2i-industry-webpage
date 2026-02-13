@@ -28,7 +28,7 @@ export function Section({
   return (
     <section
       className={cn(
-        "w-full px-6 md:px-12 lg:px-16 py-16 md:py-20",
+        "w-full px-6 md:px-12 lg:px-16 py-8 md:py-10",
         className
       )}
       {...props}

@@ -20,13 +20,13 @@ export default async function Hero() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-primary/5 to-accent/5 rounded-full blur-3xl animate-spin" style={{ animationDuration: '20s' }} />
       </div>
 
-      <div className="relative flex flex-col lg:flex-row gap-8 min-h-[90vh] md:gap-16 px-4 md:px-16 py-12 max-w-[1400px] mx-auto">
+      <div className="relative flex flex-col lg:flex-row gap-8 min-h-[90vh] md:gap-16 px-4 md:px-16 pb-12 max-w-[1400px] mx-auto">
         {/* Left Content */}
         <div className="relative flex-1 flex flex-col justify-center space-y-6 md:space-y-9 my-8 z-10">
 
           {/* Title */}
           <AnimateOnScroll delay={100}>
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold font-sans leading-tight text-center lg:text-left">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold font-sans leading-tight text-center lg:text-left">
               <HeroTitle title={title} highlights={highlights} />
             </h1>
           </AnimateOnScroll>

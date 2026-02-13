@@ -11,8 +11,8 @@ export default {
   theme: {
     extend: {
       animation: {
-        marquee: "marquee 35s linear infinite",
-        marquee2: "marquee2 42s linear infinite",
+        marquee: "marquee 45s linear infinite",
+        marquee2: "marquee2 52s linear infinite",
         "fade-in": "fadeIn 0.6s ease-out forwards",
         "slide-up": "slideUp 0.6s ease-out forwards",
         "count-up": "countUp 2s ease-out forwards",

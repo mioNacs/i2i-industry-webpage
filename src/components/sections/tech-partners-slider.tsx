@@ -41,16 +41,16 @@ export default function TechPartnersSlider({ companies }: TechPartnersSliderProp
   }, [instanceRef]);
 
   return (
-    <div className="flex flex-col md:flex-row items-center gap-8 md:gap-16 w-full border-gray-200 bg-white">
+    <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12 w-full">
       {/* Label */}
       <div className="flex-shrink-0">
         <h3 className="text-xl md:text-3xl font-bold text-gray-800 whitespace-nowrap">
-          Trusted by
+          Associated<br />Partners
         </h3>
       </div>
 
       {/* Slider */}
-      <div className="flex-grow w-full overflow-hidden">
+      <div className="flex-grow w-full overflow-hidden border-l-2 border-accent">
         <div ref={sliderRef} className="keen-slider flex items-center">
           {companies.map((company, index) => (
             <div key={index} className="keen-slider__slide flex justify-center items-center h-28 w-auto min-w-[160px]">

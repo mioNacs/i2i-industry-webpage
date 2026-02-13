@@ -5,10 +5,9 @@ import SectionHeader from "@/components/ui/section-header";
 import AnimateOnScroll from "@/components/ui/animate-on-scroll";
 
 export default function JobPartners() {
-  const first = jobPartnerIcons.slice(0, 25);
-  const second = jobPartnerIcons.slice(25, 45);
-  const third = jobPartnerIcons.slice(45, 65);
-  const fourth = jobPartnerIcons.slice(65);
+  const first = jobPartnerIcons.slice(0, 30);
+  const second = jobPartnerIcons.slice(30, 57);
+  const third = jobPartnerIcons.slice(57);
 
   return (
     <Section className="pt-0 bg-gradient-to-b from-white via-accent/5 to-white relative overflow-hidden">
@@ -27,31 +26,16 @@ export default function JobPartners() {
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                 Partners
               </span>
-              <br />
-              <span className="text-2xl md:text-4xl text-gray-600 font-semibold">
-                Help You Land Your Dream Job
-              </span>
             </>
           }
           subtitle="We have 1250+ successful alumni working in top organizations across different companies which act as our alumni network."
         />
 
-        <AnimateOnScroll>
-          <div className="inline-flex items-center gap-2 border-2 border-accent text-accent bg-white px-6 py-3 rounded-full font-semibold text-base transition-all duration-300 hover:scale-105 mb-4">
-            <span className="relative flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
-            </span>
-            You can be the next one
-          </div>
-        </AnimateOnScroll>
-
         {/* Enhanced Marquee Container */}
-        <div className="w-full bg-white border-2 border-accent rounded-2xl shadow-inner flex flex-col py-6">
+        <div className="w-full flex flex-col py-4 mt-8 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
           <MarqueeRow icons={first} reverse={false} />
           <MarqueeRow icons={second} reverse={true} />
           <MarqueeRow icons={third} reverse={false} />
-          <MarqueeRow icons={fourth} reverse={true} />
         </div>
       </div>
     </Section>
@@ -66,12 +50,12 @@ function MarqueeRow({
   reverse: boolean;
 }) {
   const width = 450;
-  const height = 50;
+  const height = 150;
 
   return (
     <div className="w-full relative flex overflow-x-hidden items-center group">
       <div
-        className={`py-6 ${
+        className={`py-4 ${
           reverse ? "animate-marquee2" : "animate-marquee"
         } group-hover:[animation-play-state:paused] whitespace-nowrap flex gap-8 md:gap-12`}
       >
@@ -79,79 +63,60 @@ function MarqueeRow({
         {icons.map((e, idx) => (
           <div
             key={e.name + idx + "-1"}
-            className="relative flex-shrink-0 group/logo transition-all duration-300 hover:scale-105 hover:z-10"
+            className="relative flex-shrink-0 group/logo transition-all duration-300 hover:scale-110"
           >
-            {/* Card Background with Glow */}
-            <div className="absolute inset-0 bg-white rounded-xl opacity-0 group-hover/logo:opacity-100 transition-opacity duration-300 shadow-lg" />
-            <div className="absolute inset-0 bg-gradient-to-br from-accent/10 via-white to-accent/10 rounded-xl opacity-0 group-hover/logo:opacity-100 transition-opacity duration-300" />
-            
-            {/* Logo Image */}
-            <div className="relative border-2 border-accent bg-accent/5 hover:border-primary rounded-xl px-6 py-4 shadow-sm group-hover/logo:shadow-xl transition-all duration-300">
               <Image
                 src={e.icon}
                 width={width}
                 height={height}
                 alt={e.name}
-                className="w-[180px] md:w-[220px] h-[36px] md:h-[44px] object-contain grayscale/50 group-hover/logo:grayscale-0 group-hover/logo:opacity-100 transition-all duration-300"
+                className="w-auto h-[40px] md:h-[60px] object-contain grayscale-[0.2] group-hover/logo:grayscale-0 transition-all duration-300"
               />
-            </div>
           </div>
         ))}
         {/* Set 2 */}
         {icons.map((e, idx) => (
           <div
             key={e.name + idx + "-2"}
-            className="relative flex-shrink-0 group/logo transition-all duration-300 hover:scale-105 hover:z-10"
+            className="relative flex-shrink-0 group/logo transition-all duration-300 opacity-80 hover:opacity-100 hover:scale-110"
           >
-            <div className="absolute inset-0 bg-white rounded-xl opacity-0 group-hover/logo:opacity-100 transition-opacity duration-300 shadow-lg" />
-            <div className="absolute inset-0 bg-gradient-to-br from-accent/10 via-white to-accent/10 rounded-xl opacity-0 group-hover/logo:opacity-100 transition-opacity duration-300" />
-            <div className="relative border-2 border-accent bg-accent/5 hover:border-primary rounded-xl px-6 py-4 shadow-sm group-hover/logo:shadow-xl transition-all duration-300">
               <Image
                 src={e.icon}
                 width={width}
                 height={height}
                 alt={e.name}
-                className="w-[180px] md:w-[220px] h-[36px] md:h-[44px] object-contain grayscale/50 group-hover/logo:grayscale-0 group-hover/logo:opacity-100 transition-all duration-300"
+                className="w-auto h-[50px] md:h-[80px] object-contain grayscale-[0.3] group-hover/logo:grayscale-0 transition-all duration-300"
               />
-            </div>
           </div>
         ))}
         {/* Set 3 */}
         {icons.map((e, idx) => (
           <div
             key={e.name + idx + "-3"}
-            className="relative flex-shrink-0 group/logo transition-all duration-300 hover:scale-105 hover:z-10"
+            className="relative flex-shrink-0 group/logo transition-all duration-300 opacity-80 hover:opacity-100 hover:scale-110"
           >
-            <div className="absolute inset-0 bg-white rounded-xl opacity-0 group-hover/logo:opacity-100 transition-opacity duration-300 shadow-lg" />
-            <div className="absolute inset-0 bg-gradient-to-br from-accent/10 via-white to-accent/10 rounded-xl opacity-0 group-hover/logo:opacity-100 transition-opacity duration-300" />
-            <div className="relative border-2 border-accent bg-accent/5 hover:border-primary rounded-xl px-6 py-4 shadow-sm group-hover/logo:shadow-xl transition-all duration-300">
               <Image
                 src={e.icon}
                 width={width}
                 height={height}
                 alt={e.name}
-                className="w-[180px] md:w-[220px] h-[36px] md:h-[44px] object-contain grayscale/50 group-hover/logo:grayscale-0 group-hover/logo:opacity-100 transition-all duration-300"
+                className="w-auto h-[50px] md:h-[80px] object-contain grayscale-[0.3] group-hover/logo:grayscale-0 transition-all duration-300"
               />
-            </div>
           </div>
         ))}
         {/* Set 4 */}
         {icons.map((e, idx) => (
           <div
             key={e.name + idx + "-4"}
-            className="relative flex-shrink-0 group/logo transition-all duration-300 hover:scale-105 hover:z-10"
+            className="relative flex-shrink-0 group/logo transition-all duration-300 opacity-80 hover:opacity-100 hover:scale-110"
           >
-            <div className="absolute inset-0 bg-white rounded-xl opacity-0 group-hover/logo:opacity-100 transition-opacity duration-300 shadow-lg" />
-            <div className="absolute inset-0 bg-gradient-to-br from-accent/10 via-white to-accent/10 rounded-xl opacity-0 group-hover/logo:opacity-100 transition-opacity duration-300" />
-            <div className="relative border-2 border-accent bg-accent/5 hover:border-primary rounded-xl px-6 py-4 shadow-sm group-hover/logo:shadow-xl transition-all duration-300">
               <Image
                 src={e.icon}
                 width={width}
                 height={height}
                 alt={e.name}
-                className="w-[180px] md:w-[220px] h-[36px] md:h-[44px] object-contain grayscale/50 group-hover/logo:grayscale-0 group-hover/logo:opacity-100 transition-all duration-300"
+                className="w-auto h-[50px] md:h-[80px] object-contain grayscale-[0.3] group-hover/logo:grayscale-0 transition-all duration-300"
               />
-            </div>
           </div>
         ))}
       </div>
