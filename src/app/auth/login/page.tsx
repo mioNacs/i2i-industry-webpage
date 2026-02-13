@@ -7,6 +7,7 @@ import Container from '@/components/ui/container'
 import { FcGoogle } from 'react-icons/fc'
 import Link from 'next/link'
 import { toast } from 'react-hot-toast'
+import { useCountdown } from '@/hooks/use-countdown'
 
 export default function LoginPage() {
     const [email, setEmail] = useState('')
@@ -14,6 +15,7 @@ export default function LoginPage() {
     const [loading, setLoading] = useState(false)
     const [needsConfirmation, setNeedsConfirmation] = useState(false)
     const [resendLoading, setResendLoading] = useState(false)
+    const { timeLeft, startCountdown, isActive } = useCountdown()
     const router = useRouter()
     const supabase = createClient()
 
@@ -61,6 +63,7 @@ export default function LoginPage() {
             } else {
                 toast.success('Confirmation email sent! Please check your inbox.')
                 setNeedsConfirmation(false)
+                startCountdown(60)
             }
         } catch (error) {
             toast.error('Failed to resend confirmation email')
@@ -166,10 +169,13 @@ export default function LoginPage() {
                                 <button
                                     type="button"
                                     onClick={handleResendConfirmation}
-                                    disabled={resendLoading}
-                                    className="text-sm font-medium text-yellow-800 dark:text-yellow-200 underline hover:text-yellow-600 dark:hover:text-yellow-100 disabled:opacity-50"
+                                    disabled={resendLoading || isActive}
+                                    className="text-sm font-medium text-yellow-800 dark:text-yellow-200 underline hover:text-yellow-600 dark:hover:text-yellow-100 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    {resendLoading ? 'Sending...' : 'Result confirmation email'}
+                                    {isActive
+                                        ? `Resend available in ${timeLeft}s`
+                                        : resendLoading ? 'Sending...' : 'Resend confirmation email'
+                                    }
                                 </button>
                             </div>
                         )}

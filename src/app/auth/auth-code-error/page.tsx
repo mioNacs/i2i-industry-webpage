@@ -34,15 +34,17 @@ function AuthCodeErrorContent() {
     return (
         <div className="bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-8 space-y-6 text-center max-w-md w-full">
             <div className="space-y-2">
-                <h1 className="text-3xl font-bold text-red-600">
-                    Authentication Error
+                <h1 className={`text-3xl font-bold ${errorState.errorCode === 'otp_expired' ? 'text-green-600' : 'text-red-600'}`}>
+                    {errorState.errorCode === 'otp_expired' ? 'Email likely verified' : 'Authentication Error'}
                 </h1>
                 <p className="text-gray-500 dark:text-gray-400">
-                    We encountered an issue while signing you in.
+                    {errorState.errorCode === 'otp_expired'
+                        ? 'The link has expired, which often means your email is already verified. Please try logging in.'
+                        : 'We encountered an issue while signing you in.'}
                 </p>
             </div>
 
-            <div className="bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 p-4 rounded-xl text-left text-sm overflow-auto">
+            <div className={`text-left text-sm overflow-auto p-4 rounded-xl ${errorState.errorCode === 'otp_expired' ? 'bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-200' : 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200'}`}>
                 {errorState.error && <p><strong>Error:</strong> {errorState.error}</p>}
                 {errorState.errorCode && <p><strong>Code:</strong> {errorState.errorCode}</p>}
                 {errorState.errorDescription && <p><strong>Description:</strong> {errorState.errorDescription.replace(/\+/g, ' ')}</p>}

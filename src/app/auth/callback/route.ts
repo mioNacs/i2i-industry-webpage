@@ -57,6 +57,15 @@ export async function GET(request: Request) {
 
             const forwardedHost = request.headers.get('x-forwarded-host') // original origin before load balancer
             const isLocalEnv = process.env.NODE_ENV === 'development'
+
+            // Check if this was a signup verification or email change verification
+            const type = searchParams.get('type')
+            if (type === 'signup' || type === 'email_change') {
+                return NextResponse.redirect(`${origin}/auth/verified`)
+            } else if (type === 'recovery') {
+                return NextResponse.redirect(`${origin}/auth/update-password`)
+            }
+
             if (isLocalEnv) {
                 // we can be sure that there is no load balancer in between, so no need to watch for X-Forwarded-Host
                 return NextResponse.redirect(`${origin}${next}`)
