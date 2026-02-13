@@ -10,9 +10,10 @@ const JOBS_PER_PAGE = 10;
 interface JobListProps {
   jobs: JobItem[];
   isLoading?: boolean;
+  savedJobIds: string[];
 }
 
-export default function JobList({ jobs, isLoading = false }: JobListProps) {
+export default function JobList({ jobs, isLoading = false, savedJobIds }: JobListProps) {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
@@ -30,6 +31,7 @@ export default function JobList({ jobs, isLoading = false }: JobListProps) {
 
   return (
     <div className="space-y-6">
+      {/* ... existing header ... */}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">
@@ -54,13 +56,16 @@ export default function JobList({ jobs, isLoading = false }: JobListProps) {
             key={`${job.name}-${startIndex + index}`}
             index={startIndex + index}
             job={job}
+            initialIsSaved={savedJobIds.includes(job.sys.id)}
           />
         ))}
       </div>
-
+      
+      {/* ... existing footer ... */}
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-2 pt-8 border-t border-gray-200">
-          <button
+           {/* ... existing footer buttons ... */}
+           <button
             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage === 1}
             className="px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"

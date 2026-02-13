@@ -300,7 +300,9 @@ export default function NavBar() {
           </div>
         </div>
 
-        <div className="mt-4 flex flex-col items-center gap-4 w-full">
+        <div 
+        className="mt-4 flex flex-col items-center gap-4 w-full"
+        onClick={closeMobile}>
           <UserNav />
         </div>
       </div>

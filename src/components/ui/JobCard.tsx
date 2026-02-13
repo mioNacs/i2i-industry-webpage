@@ -1,5 +1,6 @@
 "use client";
 
+import { toggleSaveJob } from "@/app/actions/save-job";
 import { JobItem } from "@/lib/contentful/types/job.d";
 import Image from "next/image";
 import React, { useState } from "react";
@@ -37,11 +38,14 @@ const jobTypeColors: Record<string, string> = {
 export default function JobCard({
   job,
   index,
+  initialIsSaved,
 }: {
   job: JobItem;
   index: number;
+  initialIsSaved: boolean;
 }) {
-  const [isSaved, setIsSaved] = useState(false);
+  const [isSaved, setIsSaved] = useState(initialIsSaved);
+  const [isSaving, setIsSaving] = useState(false);
   const drawerId = `jd-drawer-${index}`;
 
   const toggleDrawer = (e?: React.MouseEvent) => {
@@ -52,9 +56,28 @@ export default function JobCard({
     }
   };
 
-  const toggleSave = (e?: React.MouseEvent) => {
+  const toggleSave = async (e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
+    if (isSaving) return;
+
+    // Optimistic update
     setIsSaved((prev) => !prev);
+    setIsSaving(true);
+
+    try {
+      const result = await toggleSaveJob(job.sys.id, isSaved);
+      if (!result.success) {
+        // Revert if failed
+        setIsSaved((prev) => !prev);
+        console.error(result.error);
+        alert("Failed to save job. Please try again.");
+      }
+    } catch (error) {
+      setIsSaved((prev) => !prev);
+      console.error(error);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const jobTypes = ["full-time"];
@@ -129,11 +152,12 @@ export default function JobCard({
                   </div>
                 </div>
 
-                {/* Save Button */}
+                 {/* Save Button */}
                 <button
                   onClick={(e) => toggleSave(e)}
-                  className="flex-shrink-0 p-2 rounded-lg hover:bg-gray-100 transition-colors"
-                  aria-label="Save job"
+                  disabled={isSaving}
+                  className="flex-shrink-0 p-2 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50"
+                  aria-label={isSaved ? "Unsave job" : "Save job"}
                 >
                   <LuBookmark
                     className={`w-5 h-5 transition-all ${
@@ -162,7 +186,13 @@ export default function JobCard({
       <div className="drawer-side z-10">
         <label htmlFor={drawerId} className="drawer-overlay"></label>
         <div className="bg-white text-base-content min-h-full w-full md:w-[80%] lg:w-[60%] py-6 px-4 md:px-10 overflow-y-auto">
-          <JobDescription job={job} id={drawerId} isSaved={isSaved} onToggleSave={toggleSave} />
+          <JobDescription 
+            job={job} 
+            id={drawerId} 
+            isSaved={isSaved} 
+            onToggleSave={toggleSave} 
+            isSaving={isSaving}
+          />
         </div>
       </div>
     </div>
@@ -174,11 +204,13 @@ function JobDescription({
   id,
   isSaved,
   onToggleSave,
+  isSaving
 }: {
   job: JobItem;
   id: string;
   isSaved: boolean;
   onToggleSave: () => void;
+  isSaving: boolean;
 }) {
   const closeDrawer = () => {
     const drawer = document.getElementById(id) as HTMLInputElement | null;

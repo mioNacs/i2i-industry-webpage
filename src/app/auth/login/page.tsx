@@ -88,46 +88,30 @@ export default function LoginPage() {
             toast.error('An unexpected error occurred')
         }
     }
-
     return (
-        <div className="min-h-screen pt-20 pb-12 flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900">
-            <Container className="w-full max-w-md">
-                <div className="bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-8 space-y-6">
-                    <div className="text-center space-y-2">
-                        <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+        <div className="min-h-screen flex items-center justify-center bg-base-100 py-12 px-4 sm:px-6 lg:px-8">
+            <div className="card w-full max-w-md bg-base-100 shadow-xl border border-gray-700">
+                <div className="card-body p-8">
+                    <div className="text-center mb-6">
+                        <h1 className="text-3xl font-bold text-accent">
                             Welcome Back
                         </h1>
-                        <p className="text-gray-500 dark:text-gray-400">
-                            Sign in to access your dashboard
-                        </p>
                     </div>
 
                     <button
                         onClick={handleGoogleLogin}
-                        className="w-full flex items-center justify-center gap-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 text-gray-700 dark:text-gray-200 font-medium hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        className="btn btn-outline w-full gap-2 normal-case text-base"
                     >
-                        <FcGoogle className="text-2xl" />
+                        <FcGoogle className="text-xl" />
                         Continue with Google
                     </button>
 
-                    <div className="relative">
-                        <div className="absolute inset-0 flex items-center">
-                            <span className="w-full border-t border-gray-200 dark:border-gray-700" />
-                        </div>
-                        <div className="relative flex justify-center text-sm">
-                            <span className="px-2 bg-white dark:bg-gray-800 text-gray-500">
-                                Or continue with email
-                            </span>
-                        </div>
-                    </div>
+                    <div className="divider text-base-content/60 text-sm">Or continue with email</div>
 
                     <form onSubmit={handleEmailLogin} className="space-y-4">
-                        <div>
-                            <label
-                                htmlFor="email"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                            >
-                                Email address
+                        <div className="form-control">
+                            <label className="label" htmlFor="email">
+                                <span className="label-text font-medium">Email address</span>
                             </label>
                             <input
                                 id="email"
@@ -138,17 +122,14 @@ export default function LoginPage() {
                                     setEmail(e.target.value)
                                     setNeedsConfirmation(false)
                                 }}
-                                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                                className="input input-bordered w-full"
                                 placeholder="you@example.com"
                             />
                         </div>
 
-                        <div>
-                            <label
-                                htmlFor="password"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                            >
-                                Password
+                        <div className="form-control">
+                            <label className="label" htmlFor="password">
+                                <span className="label-text font-medium">Password</span>
                             </label>
                             <input
                                 id="password"
@@ -156,76 +137,69 @@ export default function LoginPage() {
                                 required
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                                className="input input-bordered w-full"
                                 placeholder="••••••••"
                             />
                         </div>
 
                         {needsConfirmation && (
-                            <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-xl border border-yellow-200 dark:border-yellow-800">
-                                <p className="text-sm text-yellow-800 dark:text-yellow-200 mb-3">
-                                    Your email address has not been confirmed yet.
-                                </p>
-                                <button
-                                    type="button"
-                                    onClick={handleResendConfirmation}
-                                    disabled={resendLoading || isActive}
-                                    className="text-sm font-medium text-yellow-800 dark:text-yellow-200 underline hover:text-yellow-600 dark:hover:text-yellow-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    {isActive
-                                        ? `Resend available in ${timeLeft}s`
-                                        : resendLoading ? 'Sending...' : 'Resend confirmation email'
-                                    }
-                                </button>
+                            <div className="alert alert-warning shadow-sm">
+                                <div className="flex flex-col gap-2 w-full">
+                                    <span className="text-sm">Your email address has not been confirmed yet.</span>
+                                    <button
+                                        type="button"
+                                        onClick={handleResendConfirmation}
+                                        disabled={resendLoading || isActive}
+                                        className="btn btn-xs btn-ghost underline justify-start px-0"
+                                    >
+                                        {isActive
+                                            ? `Resend available in ${timeLeft}s`
+                                            : resendLoading ? 'Sending...' : 'Resend confirmation email'
+                                        }
+                                    </button>
+                                </div>
                             </div>
                         )}
 
                         <div className="flex items-center justify-between">
-                            <div className="flex items-center">
+                            <label className="label cursor-pointer justify-start gap-2 p-0">
                                 <input
                                     id="remember-me"
                                     name="remember-me"
                                     type="checkbox"
-                                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                                    className="checkbox checkbox-accent checkbox-sm"
                                 />
-                                <label
-                                    htmlFor="remember-me"
-                                    className="ml-2 block text-sm text-gray-900 dark:text-gray-300"
-                                >
-                                    Remember me
-                                </label>
-                            </div>
+                                <span className="label-text">Remember me</span>
+                            </label>
 
-                            <div className="text-sm">
-                                <Link
-                                    href="/auth/reset-password"
-                                    className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400"
-                                >
-                                    Forgot password?
-                                </Link>
-                            </div>
+                            <Link
+                                href="/auth/reset-password"
+                                className="link link-accent text-sm no-underline hover:underline font-medium"
+                            >
+                                Forgot password?
+                            </Link>
                         </div>
 
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium py-3 rounded-xl hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="btn btn-accent text-white w-full normal-case text-lg"
                         >
-                            {loading ? 'Signing in...' : 'Sign in'}
+                            {loading ? <span className="loading loading-spinner rounded-full"></span> : 'Sign in'}
                         </button>
                     </form>
 
-                    <p className="text-center text-sm text-gray-600 dark:text-gray-400">
+                    <p className="text-center text-sm text-base-content/60 mt-6">
                         Don't have an account?{' '}
                         <Link
                             href="/auth/signup"
-                            className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400"
+                            className="link link-accent font-medium no-underline hover:underline"
                         >
                             Sign up for free
                         </Link>
                     </p>
                 </div>
-            </Container>
+            </div>
         </div>
     )
 }

@@ -8,6 +8,7 @@ import Link from "next/link";
 
 interface JobsPageClientProps {
   jobs: JobItem[];
+  savedJobIds: string[];
 }
 
 function parseSalaryValue(salary: string | null): number | null {
@@ -32,7 +33,7 @@ function matchesSalaryRange(salaryValue: number | null, range: string): boolean 
   return salaryValue >= min && salaryValue <= max;
 }
 
-export default function JobsPageClient({ jobs }: JobsPageClientProps) {
+export default function JobsPageClient({ jobs, savedJobIds }: JobsPageClientProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [locationFilter, setLocationFilter] = useState("");
   const [salaryFilter, setSalaryFilter] = useState("");
@@ -65,7 +66,9 @@ export default function JobsPageClient({ jobs }: JobsPageClientProps) {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* ... Sidebar ... */}
       <div className="lg:col-span-1">
+        {/* ... */}
         <div className="space-y-8 lg:sticky lg:top-24">
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
             <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
@@ -98,7 +101,7 @@ export default function JobsPageClient({ jobs }: JobsPageClientProps) {
 
       <div className="lg:col-span-2">
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-          <JobList jobs={filteredJobs} />
+          <JobList jobs={filteredJobs} savedJobIds={savedJobIds} />
         </div>
       </div>
     </div>

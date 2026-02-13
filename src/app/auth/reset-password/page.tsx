@@ -39,26 +39,23 @@ export default function ResetPasswordPage() {
     }
 
     return (
-        <div className="min-h-screen pt-20 pb-12 flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900">
-            <Container className="w-full max-w-md">
-                <div className="bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-8 space-y-6">
-                    <div className="text-center space-y-2">
-                        <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+        <div className="min-h-screen flex items-center justify-center bg-base-100 py-12 px-4 sm:px-6 lg:px-8">
+            <div className="card w-full max-w-md bg-base-100 shadow-xl border border-gray-700">
+                <div className="card-body p-8">
+                    <div className="text-center mb-6">
+                        <h1 className="text-3xl font-bold text-accent mb-2">
                             Reset Password
                         </h1>
-                        <p className="text-gray-500 dark:text-gray-400">
+                        <p className="text-base-content/60">
                             Enter your email to receive a reset link
                         </p>
                     </div>
 
                     {!success ? (
                         <form onSubmit={handleResetPassword} className="space-y-4">
-                            <div>
-                                <label
-                                    htmlFor="email"
-                                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                                >
-                                    Email address
+                            <div className="form-control">
+                                <label className="label" htmlFor="email">
+                                    <span className="label-text font-medium">Email address</span>
                                 </label>
                                 <input
                                     id="email"
@@ -66,7 +63,7 @@ export default function ResetPasswordPage() {
                                     required
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                                    className="input input-bordered w-full"
                                     placeholder="you@example.com"
                                 />
                             </div>
@@ -74,42 +71,43 @@ export default function ResetPasswordPage() {
                             <button
                                 type="submit"
                                 disabled={loading || isActive}
-                                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium py-3 rounded-xl hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="btn btn-accent text-white w-full normal-case text-lg"
                             >
                                 {isActive
                                     ? `Resend available in ${timeLeft}s`
-                                    : loading ? 'Sending link...' : 'Send reset link'
+                                    : loading ? <span className="loading loading-spinner rounded-full"></span> : 'Send reset link'
                                 }
                             </button>
                         </form>
                     ) : (
-                        <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-xl text-center">
-                            <p className="text-green-800 dark:text-green-200">
-                                Check your email for a link to reset your password. If it doesn't appear within a few minutes, check your spam folder.
-                            </p>
-                            <div className="mt-4">
-                                <button
-                                    onClick={() => !isActive && setSuccess(false)}
-                                    disabled={isActive}
-                                    className="text-sm font-medium text-green-800 dark:text-green-200 underline hover:text-green-600 dark:hover:text-green-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    {isActive ? `Resend available in ${timeLeft}s` : 'Resend email'}
-                                </button>
+                        <div className="alert alert-success shadow-sm flex-col items-start gap-4">
+                            <div>
+                                <h3 className="font-bold">Check your email</h3>
+                                <div className="text-sm">
+                                    Check your email for a link to reset your password. If it doesn't appear within a few minutes, check your spam folder.
+                                </div>
                             </div>
+                            <button
+                                onClick={() => !isActive && setSuccess(false)}
+                                disabled={isActive}
+                                className="btn btn-sm btn-ghost underline"
+                            >
+                                {isActive ? `Resend available in ${timeLeft}s` : 'Resend email'}
+                            </button>
                         </div>
                     )}
 
-                    <div className="text-center">
+                    <div className="text-center mt-6">
                         <Link
                             href="/auth/login"
-                            className="inline-flex items-center text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+                            className="inline-flex items-center text-sm font-medium text-base-content/60 hover:text-accent transition-colors"
                         >
                             <ArrowLeftIcon className="h-4 w-4 mr-1" />
                             Back to login
                         </Link>
                     </div>
                 </div>
-            </Container>
+            </div>
         </div>
     )
 }

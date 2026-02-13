@@ -3,8 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { IoMdStar } from "react-icons/io";
 import HeroImage from "../../../public/hero2.png";
-import { ContactUsButton } from "@/components/forms/contact-form";
 import AnimateOnScroll from "@/components/ui/animate-on-scroll";
+import { ContactUsButton } from "../forms/contact-form";
 
 export default async function Hero() {
   const response = await getHeroSection();
@@ -40,13 +40,11 @@ export default async function Hero() {
 
           {/* CTA Section */}
           <AnimateOnScroll delay={300}>
-            <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
-              <Link
-                href="/auth/login"
-                className="btn btn-lg px-8 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 text-white border-0 bg-accent flex items-center justify-center font-bold rounded-xl"
-              >
-                Start Your Journey
-              </Link>
+            <div className="flex flex-col sm:flex-row items-center gap-6 justify-center lg:justify-start">
+              <ContactUsButton 
+                text="Start Your Journey" 
+                className="btn-lg px-8 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 text-white border-0 bg-accent"
+              />
               <Link
                 href="/course"
                 className="btn border-none shadow-xl hover:shadow-2xl text-white bg-primary hover:bg-accent px-8 scale-105 hover:scale-110 transition-all duration-200"

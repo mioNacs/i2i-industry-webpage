@@ -67,44 +67,32 @@ export default function SignupPage() {
     }
 
     return (
-        <div className="min-h-screen pt-20 pb-12 flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900">
-            <Container className="w-full max-w-md">
-                <div className="bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-8 space-y-6">
-                    <div className="text-center space-y-2">
-                        <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+        <div className="min-h-screen flex items-center justify-center bg-base-100 py-12 px-4 sm:px-6 lg:px-8">
+            <div className="card w-full max-w-md bg-base-100 shadow-xl border border-gray-700">
+                <div className="card-body p-8">
+                    <div className="text-center mb-6">
+                        <h1 className="text-3xl font-bold text-accent mb-2">
                             Create Account
                         </h1>
-                        <p className="text-gray-500 dark:text-gray-400">
+                        <p className="text-base-content/60">
                             Join us to start your journey
                         </p>
                     </div>
 
                     <button
                         onClick={handleGoogleSignup}
-                        className="w-full flex items-center justify-center gap-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 text-gray-700 dark:text-gray-200 font-medium hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        className="btn btn-outline w-full gap-2 normal-case text-base"
                     >
-                        <FcGoogle className="text-2xl" />
+                        <FcGoogle className="text-xl" />
                         Sign up with Google
                     </button>
 
-                    <div className="relative">
-                        <div className="absolute inset-0 flex items-center">
-                            <span className="w-full border-t border-gray-200 dark:border-gray-700" />
-                        </div>
-                        <div className="relative flex justify-center text-sm">
-                            <span className="px-2 bg-white dark:bg-gray-800 text-gray-500">
-                                Or sign up with email
-                            </span>
-                        </div>
-                    </div>
+                    <div className="divider text-base-content/60 text-sm">Or sign up with email</div>
 
                     <form onSubmit={handleSignup} className="space-y-4">
-                        <div>
-                            <label
-                                htmlFor="fullName"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                            >
-                                Full Name
+                        <div className="form-control">
+                            <label className="label" htmlFor="fullName">
+                                <span className="label-text font-medium">Full Name</span>
                             </label>
                             <input
                                 id="fullName"
@@ -112,17 +100,14 @@ export default function SignupPage() {
                                 required
                                 value={fullName}
                                 onChange={(e) => setFullName(e.target.value)}
-                                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                                className="input input-bordered w-full"
                                 placeholder="John Doe"
                             />
                         </div>
 
-                        <div>
-                            <label
-                                htmlFor="email"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                            >
-                                Email address
+                        <div className="form-control">
+                            <label className="label" htmlFor="email">
+                                <span className="label-text font-medium">Email address</span>
                             </label>
                             <input
                                 id="email"
@@ -130,17 +115,14 @@ export default function SignupPage() {
                                 required
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                                className="input input-bordered w-full"
                                 placeholder="you@example.com"
                             />
                         </div>
 
-                        <div>
-                            <label
-                                htmlFor="password"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                            >
-                                Password
+                        <div className="form-control">
+                            <label className="label" htmlFor="password">
+                                <span className="label-text font-medium">Password</span>
                             </label>
                             <input
                                 id="password"
@@ -148,7 +130,7 @@ export default function SignupPage() {
                                 required
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                                className="input input-bordered w-full"
                                 placeholder="••••••••"
                             />
                         </div>
@@ -156,23 +138,23 @@ export default function SignupPage() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium py-3 rounded-xl hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="btn btn-accent text-white w-full normal-case text-lg"
                         >
-                            {loading ? 'Creating account...' : 'Create account'}
+                            {loading ? <span className="loading loading-spinner rounded-full"></span> : 'Create account'}
                         </button>
                     </form>
 
-                    <p className="text-center text-sm text-gray-600 dark:text-gray-400">
+                    <p className="text-center text-sm text-base-content/60 mt-6">
                         Already have an account?{' '}
                         <Link
                             href="/auth/login"
-                            className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400"
+                            className="link link-accent font-medium no-underline hover:underline"
                         >
                             Sign in
                         </Link>
                     </p>
                 </div>
-            </Container>
+            </div>
         </div>
     )
 }
