@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import React from 'react'
-import { FaUserTie, FaUserGraduate, FaBriefcase } from 'react-icons/fa'
+import { FaUserTie, FaUniversity, FaBriefcase } from 'react-icons/fa'
 import AnimateOnScroll from '@/components/ui/animate-on-scroll'
 
 export default function HomeCTA() {
@@ -21,10 +21,10 @@ export default function HomeCTA() {
             iconClass: "bg-yellow-50 text-yellow-600",
         },
         {
-            title: "For Students",
-            subtitle: "Ready to start your journey?",
+            title: "For Colleges",
+            subtitle: "Shape your future",
             href: "/course",
-            icon: <FaUserGraduate size={24} />,
+            icon: <FaUniversity size={24} />,
             iconClass: "bg-accent/10 text-accent",
         }
     ]

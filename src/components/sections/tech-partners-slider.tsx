@@ -10,6 +10,8 @@ interface TechPartnersSliderProps {
 }
 
 export default function TechPartnersSlider({ companies }: TechPartnersSliderProps) {
+  const validCompanies = companies.filter((c) => c && c.trim().length > 0);
+
   const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
     loop: true,
     mode: "snap",
@@ -40,6 +42,8 @@ export default function TechPartnersSlider({ companies }: TechPartnersSliderProp
     };
   }, [instanceRef]);
 
+  if (validCompanies.length === 0) return null;
+
   return (
     <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12 w-full">
       {/* Label */}
@@ -51,9 +55,9 @@ export default function TechPartnersSlider({ companies }: TechPartnersSliderProp
 
       {/* Slider */}
       <div className="flex-grow w-full overflow-hidden border-l-2 border-accent">
-        <div ref={sliderRef} className="keen-slider flex items-center">
-          {companies.map((company, index) => (
-            <div key={index} className="keen-slider__slide flex justify-center items-center h-28 w-auto min-w-[160px]">
+        <div key={validCompanies.join(',')} ref={sliderRef} className="keen-slider flex items-center">
+          {validCompanies.map((company, index) => (
+            <div key={`${company}-${index}`} className="keen-slider__slide flex justify-center items-center h-28 w-auto min-w-[160px]">
               <div className="relative w-full h-full">
                 <Image
                   src={company}
