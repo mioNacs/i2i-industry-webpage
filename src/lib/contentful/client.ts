@@ -248,7 +248,7 @@ export async function getAboutKaushalData() {
 
 export async function getAboutPhotos() {
   return fetchGraphQL<AboutPhotosResponse>(`query {
-    aboutPhotosCollection {
+    aboutPhotosCollection: photosCollection {
       items {
         photosCollection { items { url } }
       }
