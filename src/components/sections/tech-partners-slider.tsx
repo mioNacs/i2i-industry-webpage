@@ -49,7 +49,7 @@ export default function TechPartnersSlider({ companies }: TechPartnersSliderProp
       {/* Label */}
       <div className="flex-shrink-0">
         <h3 className="text-xl md:text-3xl font-bold text-gray-800 whitespace-nowrap">
-          Associated<br />Partners
+          Trusted By
         </h3>
       </div>
 
