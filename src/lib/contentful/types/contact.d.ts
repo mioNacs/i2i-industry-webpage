@@ -4,5 +4,6 @@ export interface ContactResponse {
 export interface ContactItem {
   email: string;
   phoneNumber: string;
-  address: string;
+  address?: string;
+  addresses?: unknown;
 }

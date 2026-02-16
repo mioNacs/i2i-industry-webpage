@@ -169,7 +169,7 @@ export async function getPhotos() {
 export async function getContact() {
   return fetchGraphQL<ContactResponse>(`query {
     contactCollection {
-      items { email, phoneNumber, address }
+      items { email, phoneNumber, addresses }
     }
   }`);
 }
