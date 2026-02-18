@@ -6,6 +6,7 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { LuArrowRight, LuBookmark, LuClock, LuMapPin } from "react-icons/lu";
 import JobDescriptionSections from "./JobDescriptionSections";
+import JobDescription from "@/components/jobs/job-description";
 
 const getTimeAgo = (dateString: string): string => {
   const date = new Date(dateString).getTime();
@@ -188,10 +189,15 @@ export default function JobCard({
         <div className="bg-white text-base-content min-h-full w-full md:w-[80%] lg:w-[60%] py-6 px-4 md:px-10 overflow-y-auto">
           <JobDescription 
             job={job} 
-            id={drawerId} 
             isSaved={isSaved} 
             onToggleSave={toggleSave} 
             isSaving={isSaving}
+            onClose={() => {
+                const drawer = document.getElementById(drawerId) as HTMLInputElement | null;
+                if (drawer) {
+                    drawer.checked = false;
+                }
+            }}
           />
         </div>
       </div>
@@ -199,170 +205,4 @@ export default function JobCard({
   );
 }
 
-function JobDescription({
-  job,
-  id,
-  isSaved,
-  onToggleSave,
-  isSaving
-}: {
-  job: JobItem;
-  id: string;
-  isSaved: boolean;
-  onToggleSave: () => void;
-  isSaving: boolean;
-}) {
-  const closeDrawer = () => {
-    const drawer = document.getElementById(id) as HTMLInputElement | null;
-    if (drawer) {
-      drawer.checked = false;
-    }
-  };
 
-  return (
-    <div className="bg-white text-start font-sans pb-10">
-      <div className="w-full flex flex-col items-start gap-8">
-        {/* Close Button */}
-        <button
-          onClick={closeDrawer}
-          className="self-end btn btn-sm btn-circle btn-ghost"
-        >
-          ✕
-        </button>
-
-        {/* Header */}
-        <div className="w-full">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="h-14 w-14 rounded-lg bg-gray-100 flex items-center justify-center">
-                <Image
-                  src={job.companyIcon.url}
-                  alt={job.companyName}
-                  width={56}
-                  height={56}
-                  className="object-contain w-12 h-12"
-                />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">
-                  {job.name}
-                </h1>
-                <p className="text-lg text-gray-600 mt-1">
-                  {job.companyName}
-                </p>
-              </div>
-            </div>
-
-            <button
-              onClick={onToggleSave}
-              className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-              aria-label="Save job"
-            >
-              <LuBookmark
-                className={`w-5 h-5 transition-all ${
-                  isSaved
-                    ? "fill-primary text-primary"
-                    : "text-gray-400 hover:text-gray-600"
-                }`}
-              />
-            </button>
-          </div>
-        </div>
-
-        {/* Job Details Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full">
-          <div className="bg-gradient-to-br from-blue-50 to-transparent p-4 rounded-xl border border-blue-100">
-            <p className="text-xs text-gray-600 font-semibold uppercase tracking-wider">
-              Location
-            </p>
-            <p className="text-lg font-bold text-gray-900 mt-2">
-              {job.location}
-            </p>
-          </div>
-          <div className="bg-gradient-to-br from-green-50 to-transparent p-4 rounded-xl border border-green-100">
-            <p className="text-xs text-gray-600 font-semibold uppercase tracking-wider">
-              Salary
-            </p>
-            <p className="text-lg font-bold text-primary mt-2">
-              {job.salary ? `₹${job.salary}` : "Undisclosed"}
-            </p>
-          </div>
-          <div className="bg-gradient-to-br from-purple-50 to-transparent p-4 rounded-xl border border-purple-100">
-            <p className="text-xs text-gray-600 font-semibold uppercase tracking-wider">
-              Posted
-            </p>
-            <p className="text-lg font-bold text-gray-900 mt-2">
-              {getTimeAgo(job.sys.firstPublishedAt)}
-            </p>
-          </div>
-          <div className="bg-gradient-to-br from-orange-50 to-transparent p-4 rounded-xl border border-orange-100">
-            <p className="text-xs text-gray-600 font-semibold uppercase tracking-wider">
-              Type
-            </p>
-            <p className="text-lg font-bold text-gray-900 mt-2 capitalize">
-              Full-time
-            </p>
-          </div>
-        </div>
-
-        {/* Apply Section */}
-        <div className="space-y-3 w-full">
-          <h2 className="text-xl font-bold text-gray-900">Apply</h2>
-          <div className="bg-gradient-to-br from-blue-50/50 to-transparent border border-blue-200 rounded-xl p-6">
-            <p className="text-gray-700 leading-relaxed mb-4">
-              Please share your Resume at{" "}
-              <a
-                href="mailto:info@i2iindustry.com"
-                className="text-primary hover:underline font-semibold"
-              >
-                info@i2iindustry.com
-              </a>{" "}
-              with the following Details:
-            </p>
-            <ul className="space-y-2 text-gray-700">
-              <li className="flex items-start gap-2">
-                <span className="text-primary font-bold mt-0.5">•</span>
-                <span>Name Of Company</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-primary font-bold mt-0.5">•</span>
-                <span>Name Of Position</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-primary font-bold mt-0.5">•</span>
-                <span>Resume</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        {/* Overview with Collapsible Sections */}
-        <div className="w-full">
-          <JobDescriptionSections jobOverview={job.jobOverview} />
-        </div>
-
-        {/* What we're looking for */}
-        <div className="space-y-3">
-          <h2 className="text-xl font-bold text-gray-900">
-            What we&apos;re looking for
-          </h2>
-          <ul className="list-disc list-inside text-gray-700 space-y-2">
-            <li>Strong problem-solving skills and attention to detail.</li>
-            <li>Experience working with cross-functional teams.</li>
-            <li>Ability to communicate complex ideas clearly.</li>
-          </ul>
-        </div>
-
-        {/* What we offer */}
-        <div className="space-y-3">
-          <h2 className="text-xl font-bold text-gray-900">What we offer</h2>
-          <ul className="list-disc list-inside text-gray-700 space-y-2">
-            <li>Flexible working hours and hybrid-friendly culture.</li>
-            <li>Health insurance, learning budget, and wellness perks.</li>
-            <li>Collaborative team with growth opportunities.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  );
-}

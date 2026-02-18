@@ -231,6 +231,17 @@ export async function getJobsData() {
   }`);
 }
 
+export async function getJob(id: string) {
+    const response = await fetchGraphQL<{ data: { job: any } }>(`query {
+      job(id: "${id}") {
+        sys { firstPublishedAt, id },
+        name, location, salary, jobOverview,
+        companyIcon { url }, companyName
+      }
+    }`);
+    return response.data.job;
+}
+
 export async function getPrivacyPolicies() {
   return fetchGraphQL<PrivacyResponse>(`query {
     privacyPolicyCollection {
