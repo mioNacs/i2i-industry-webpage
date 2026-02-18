@@ -117,9 +117,7 @@ export default function FooterClient({
     () => normalizeAddresses(addresses),
     [addresses]
   );
-
-  console.log("Normalized Addresses:", normalizedAddresses);
-
+  
   const [activeIndex, setActiveIndex] = useState(0);
   const activeAddress = normalizedAddresses[activeIndex];
 
