@@ -44,7 +44,7 @@ export default function CourseDetailHero({ course }: CourseDetailHeroProps) {
                                 <div className="text-left">
                                     <b className='text-gray-900 block mb-1 text-lg'>Highlights:</b>
                                     <ul className="text-sm leading-relaxed text-gray-600 list-disc pl-5">
-                                        {course.overviewPoints.slice(0, 3).map((pt, i) => (
+                                        {course.overviewPoints.map((pt, i) => (
                                             <li key={i}>{pt}</li>
                                         ))}
                                     </ul>

@@ -33,39 +33,7 @@ export default async function CoursePage({ params }: { params: Promise<PageProp>
             {/* Hero */}
             <CourseDetailHero course={course} />
 
-             {/* Overview Points */}
-             <section className="relative w-full py-16 overflow-hidden bg-white">
-                 <div className="container mx-auto px-4 md:px-8 relative z-10">
-                    <SectionHeader 
-                        title={<>Program <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Overview</span></>}
-                        subtitle="A comprehensive overview of what you will learn and achieve."
-                        align="center"
-                        className="mb-8 md:mb-12"
-                    />
-
-                    <div className="max-w-4xl mx-auto bg-white p-8 md:p-12 rounded-3xl border-2 border-black/5 shadow-xl shadow-gray-200/40 relative overflow-hidden group hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500">
-                         {/* Corner Accents */}
-                         <div className="absolute top-0 left-0 w-2 h-20 bg-gradient-to-b from-primary to-transparent opacity-50" />
-                         <div className="absolute top-0 left-0 h-2 w-20 bg-gradient-to-r from-primary to-transparent opacity-50" />
-                         <div className="absolute bottom-0 right-0 w-2 h-20 bg-gradient-to-t from-accent to-transparent opacity-50" />
-                         <div className="absolute bottom-0 right-0 h-2 w-20 bg-gradient-to-l from-accent to-transparent opacity-50" />
-
-                        <div className="space-y-4">
-                            {course.overviewPoints?.map((point, idx) => (
-                                <p key={idx} className="text-lg md:text-xl text-gray-700 leading-relaxed font-sans relative z-10 flex items-start gap-3">
-                                    <span className="w-2 h-2 rounded-full bg-primary mt-2.5 flex-shrink-0" />
-                                    {point}
-                                </p>
-                            ))}
-                            {!course.overviewPoints && (
-                                <p className="text-lg md:text-xl text-gray-700 leading-relaxed font-sans relative z-10">
-                                    {course.description}
-                                </p>
-                            )}
-                        </div>
-                    </div>
-                 </div>
-            </section>
+             
 
             {/* Course Tiers */}
             <CourseTierSection tiers={course.tiers} />
