@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { HiBriefcase, HiAcademicCap, HiLocationMarker, HiOfficeBuilding, HiCheckCircle } from 'react-icons/hi';
+import { HiBriefcase, HiAcademicCap, HiLocationMarker, HiOfficeBuilding, HiCheckCircle, HiClock, HiCalendar, HiArrowRight } from 'react-icons/hi';
 import SignOutButton from '@/components/auth/sign-out-button';
 
 interface ProfileContentProps {
@@ -183,40 +183,128 @@ export default function ProfileContent({
         {/* Courses Tab */}
         {activeTab === 'courses' && (
             <div className="animate-fade-in">
-                 <div className="mb-6">
+                 <div className="mb-8">
                     <h2 className="text-2xl font-bold text-gray-900">Enrolled Courses</h2>
-                    <p className="text-gray-500">Continue where you left off.</p>
+                    <p className="text-gray-500">Continue your learning journey.</p>
                 </div>
 
                 {enrolledCourses.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {enrolledCourses.map((course) => (
-                            <div key={course.sys.id} className="card bg-white border border-gray-200 hover:shadow-md transition-all overflow-hidden group">
-                                {course.image?.url && (
-                                    <figure className="h-40 relative bg-gray-100">
-                                        <Image 
-                                            src={course.image.url} 
-                                            alt={course.name} 
-                                            fill 
-                                            className="object-cover group-hover:scale-105 transition-transform duration-500"
-                                        />
-                                        <div className="absolute top-3 right-3 badge badge-primary shadow-sm">
-                                            {course.mode}
+                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                        {enrolledCourses.map((course, index) => (
+                            <div 
+                                key={course.sys.id} 
+                                className="group relative bg-white rounded-2xl border-2 border-gray-100 hover:border-primary/50 shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden"
+                                style={{ 
+                                    animation: `slideInUp 0.6s ease-out ${index * 0.1}s both`
+                                }}
+                            >
+                                {/* Glow Effect */}
+                                <div className="absolute inset-0 bg-gradient-to-br from-primary/0 to-accent/0 group-hover:from-primary/5 group-hover:to-accent/5 transition-all duration-500 pointer-events-none rounded-2xl" />
+                                
+                                <div className="flex flex-col md:flex-row relative">
+                                    {/* Course Image */}
+                                    {course.image?.url && (
+                                        <div className="md:w-56 h-52 md:h-auto relative overflow-hidden flex-shrink-0">
+                                            <Image 
+                                                src={course.image.url} 
+                                                alt={course.title || course.name} 
+                                                fill 
+                                                className="object-cover group-hover:scale-110 transition-transform duration-700"
+                                            />
+                                            {/* Gradient Overlay */}
+                                            <div className="absolute inset-0 bg-gradient-to-r md:bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                                            
+                                            {/* Status Badge on Image */}
+                                            {course.enrollment?.paymentStatus === 'completed' && (
+                                                <div className="absolute top-4 left-4 flex items-center gap-1.5 px-3 py-1.5 bg-green-500 text-white rounded-full text-xs font-bold shadow-lg">
+                                                    <HiCheckCircle className="w-4 h-4" />
+                                                    Active
+                                                </div>
+                                            )}
                                         </div>
-                                    </figure>
-                                )}
-                                <div className="card-body p-6">
-                                    <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-1">
-                                        {course.name}
-                                    </h3>
-                                    <p className="text-sm text-gray-500 line-clamp-2 mb-4">
-                                        {course.description}
-                                    </p>
+                                    )}
                                     
-                                    <div className="card-actions mt-auto">
-                                        <Link href={`/courses/${course.sys.id}`} className="btn btn-primary btn-sm w-full">
-                                            Go to Course
-                                        </Link>
+                                    {/* Course Details */}
+                                    <div className="flex-1 p-6 flex flex-col">
+                                        {/* Header */}
+                                        <div className="mb-4">
+                                            <h3 className="font-bold text-xl text-gray-900 mb-2 group-hover:text-primary transition-colors duration-300">
+                                                {course.title || course.name}
+                                            </h3>
+                                            
+                                            {/* Tier Badge */}
+                                            {course.enrollment?.tier && (
+                                                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 rounded-full">
+                                                    <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                                                    <span className="text-xs font-bold text-primary">{course.enrollment.tier.tier}</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                        
+                                        {/* Tier Details Card */}
+                                        {course.enrollment?.tier && (
+                                            <div className="bg-gradient-to-br from-slate-50 to-gray-50 rounded-xl p-4 mb-4 border border-gray-100 group-hover:border-primary/20 transition-colors duration-300">
+                                                <p className="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                                                    <HiAcademicCap className="w-4 h-4 text-primary" />
+                                                    {course.enrollment.tier.title}
+                                                </p>
+                                                
+                                                <div className="grid grid-cols-2 gap-3">
+                                                    <div className="flex items-center gap-2 text-sm">
+                                                        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                                                            <HiClock className="w-4 h-4 text-primary" />
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-xs text-gray-400">Duration</p>
+                                                            <p className="font-semibold text-gray-700">{course.enrollment.tier.durationMonths}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-2 text-sm">
+                                                        <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
+                                                            <HiCalendar className="w-4 h-4 text-accent" />
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-xs text-gray-400">Total Hours</p>
+                                                            <p className="font-semibold text-gray-700">{course.enrollment.tier.durationHours}h</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                {/* Progress-like stats */}
+                                                <div className="mt-3 pt-3 border-t border-gray-200/60 flex items-center justify-between text-xs">
+                                                    <span className="text-gray-500">
+                                                        <span className="font-medium text-gray-700">Academic:</span> {course.enrollment.tier.academicDuration || 'N/A'}
+                                                    </span>
+                                                    <span className="text-gray-500">
+                                                        <span className="font-medium text-gray-700">Internship:</span> {course.enrollment.tier.internshipDuration || 'N/A'}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        )}
+                                        
+                                        {/* Footer */}
+                                        <div className="mt-auto flex items-center justify-between pt-4 border-t border-gray-100">
+                                            <div>
+                                                {course.enrollment?.amountPaid && (
+                                                    <p className="text-lg font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                                                        {(course.enrollment.amountPaid / 100).toLocaleString('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 })}
+                                                    </p>
+                                                )}
+                                                {course.enrollment?.purchasedAt && (
+                                                    <p className="text-xs text-gray-400">
+                                                        Enrolled {new Date(course.enrollment.purchasedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                                    </p>
+                                                )}
+                                            </div>
+                                            
+                                            <Link 
+                                                href={`/course/${course.sys.id}`} 
+                                                className="group/btn flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-focus text-white text-sm font-semibold rounded-xl shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 hover:scale-105"
+                                            >
+                                                Continue
+                                                <HiArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform duration-300" />
+                                            </Link>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
