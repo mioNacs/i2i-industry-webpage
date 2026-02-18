@@ -20,7 +20,7 @@ export default function CourseCard({ data }: CourseCardProps) {
                     width={400}
                     height={280}
                     src={data.image.url}
-                    alt={`${data.name} course image`}
+                    alt={`${data.title} course image`}
                     className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500 will-change-transform"
                 />
                 
@@ -33,17 +33,17 @@ export default function CourseCard({ data }: CourseCardProps) {
                         className='font-bold text-xl text-white line-clamp-2'
                         style={{ textShadow: '0 4px 6px rgba(0, 0, 0, 0.6), 0 2px 4px rgba(0, 0, 0, 0.4)' }}
                     >
-                        {data.name}
+                        {data.title}
                     </h2>
                 </div>
             </div>
 
             <div className='p-5 flex flex-col flex-1'>
-                {/* Mode Badge */}
+                {/* Mode Badge - Hardcoded for now as it's not in the new schema yet */}
                 <div className='mb-4'>
                     <div className='inline-flex items-center gap-2 px-3 py-1.5 border-2 border-accent rounded-full'>
                         <span className="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
-                        <span className="text-xs font-semibold text-gray-900">{data.mode}</span>
+                        <span className="text-xs font-semibold text-gray-900">Online / Hybrid</span>
                     </div>
                 </div>
 
@@ -51,12 +51,17 @@ export default function CourseCard({ data }: CourseCardProps) {
                 <ul className='flex flex-col gap-2 text-sm font-medium text-gray-600 mb-4'>
                     <li className='flex items-center gap-2'>
                         <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0"></span>
-                        {data.duration}
+                        {/* Derive duration from tiers */}
+                        {data.tiers?.items?.length > 0 
+                            ? `${data.tiers.items[0].durationMonths} - ${data.tiers.items[data.tiers.items.length - 1].durationMonths}`
+                            : 'Flexible Duration'}
                     </li>
-                    <li className='flex items-center gap-2'>
-                        <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0"></span>
-                        {data.sessions}
-                    </li>
+                    {data.startingPrice && (
+                        <li className='flex items-center gap-2'>
+                            <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0"></span>
+                            Starts at {data.startingPrice.toLocaleString('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 })}
+                        </li>
+                    )}
                 </ul>
 
                 {/* Spacer to push rating to bottom */}

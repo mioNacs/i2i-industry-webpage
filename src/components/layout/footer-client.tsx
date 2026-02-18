@@ -8,7 +8,9 @@ import { BsChevronRight } from "react-icons/bs";
 import { socialLinks } from "@/lib/constants";
 import Logo from "../../../public/logo.png";
 
-type Course = { name: string; sys: { id: string } };
+import { CourseItem } from "@/lib/contentful/types/courses";
+
+type Course = CourseItem;
 
 type AddressEntry = {
   label: string;
@@ -115,9 +117,7 @@ export default function FooterClient({
     () => normalizeAddresses(addresses),
     [addresses]
   );
-
-  console.log("Normalized Addresses:", normalizedAddresses);
-
+  
   const [activeIndex, setActiveIndex] = useState(0);
   const activeAddress = normalizedAddresses[activeIndex];
 
@@ -207,7 +207,7 @@ export default function FooterClient({
                         isActive
                           ? "text-primary font-semibold"
                           : "text-gray-700 hover:text-primary"
-                      }`}
+                        }`}
                     >
                       <LuMapPin className="mt-0.5 flex-shrink-0" />
                       <span>{entry.label}</span>
@@ -224,12 +224,12 @@ export default function FooterClient({
           <h3 className="text-xl font-semibold mb-2 capitalize">Courses</h3>
           <ul className="space-y-5 max-w-[280px]">
             {courses.slice(0, 3).map((course) => (
-              <li key={course.name}>
+              <li key={course.title}>
                 <Link
                   href={`/course/${course.sys.id}`}
                   className="hover:text-primary transition-colors"
                 >
-                  {course.name}
+                  {course.title}
                 </Link>
               </li>
             ))}

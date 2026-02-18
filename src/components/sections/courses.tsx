@@ -1,34 +1,14 @@
 import { getCourses } from "@/lib/contentful/client";
-import Image from "next/image";
 import Link from "next/link";
 import { Section } from "@/components/ui/container";
 import AnimateOnScroll from "@/components/ui/animate-on-scroll";
 import SectionHeader from "@/components/ui/section-header";
-import { HiArrowRight, HiCalendar, HiCheckCircle } from "react-icons/hi";
-
-export interface CourseData {
-  id: string;
-  title: string;
-  img: string;
-  learningPoints: string[];
-  startDate: Date;
-  description: string;
-  module: { name: string; data: string[] }[];
-}
+import { HiArrowRight } from "react-icons/hi";
+import CourseCard from "./course-card";
 
 export default async function Courses() {
   const response = await getCourses();
-  const courses: CourseData[] = response.data.coursesCollection.items.map(
-    (e: any) => ({
-      id: e.sys.id,
-      title: e.name,
-      img: e.image.url,
-      learningPoints: e.learningPoints,
-      startDate: new Date(e.startDate),
-      description: e.description,
-      module: e.module,
-    })
-  );
+  const courses = response.data.courseCollection.items;
 
   return (
     <Section className="bg-gradient-to-b from-white via-accent/5 to-white relative overflow-hidden">
@@ -65,7 +45,7 @@ export default async function Courses() {
         {/* Courses Grid */}
         <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {courses.slice(0, 3).map((c, i) => (
-            <AnimateOnScroll key={c.id} delay={i * 0.1}>
+            <AnimateOnScroll key={c.sys.id} delay={i * 0.1}>
               <CourseCard data={c} />
             </AnimateOnScroll>
           ))}
@@ -85,80 +65,5 @@ export default async function Courses() {
         </AnimateOnScroll>
       </div>
     </Section>
-  );
-}
-
-function CourseCard({ data }: { data: CourseData }) {
-
-  return (
-    <div className="group relative bg-white rounded-2xl border border-gray-100 hover:border-primary/30 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] h-full flex flex-col">
-      {/* Glow Effect */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/0 to-accent/0 group-hover:from-primary/5 group-hover:to-accent/5 transition-all duration-300 pointer-events-none rounded-2xl" />
-      
-      {/* Image Container */}
-      <div className="relative h-48 rounded-t-2xl overflow-hidden">
-        <Image
-          width={361}
-          height={200}
-          src={data.img}
-          alt={data.title}
-          className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500 will-change-transform"
-        />
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-
-        {/* Course Title Overlay */}
-        <div className="absolute bottom-0 left-0 right-0 p-4">
-          <h3 
-            className="text-xl font-bold text-white line-clamp-2"
-            style={{ textShadow: '0 4px 6px rgba(0, 0, 0, 0.6), 0 2px 4px rgba(0, 0, 0, 0.4)' }}
-          >
-            {data.title}
-          </h3>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="p-6 flex-1 flex flex-col">
-        {/* Description */}
-        <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-          {data.description}
-        </p>
-
-        {/* Key Learning Points - Minimalist Pills */}
-        <div className="flex flex-wrap gap-2 mb-6">
-          {data.learningPoints.slice(0, 3).map((point, i) => (
-            <div
-              key={i}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-primary/20"
-            >
-              <HiCheckCircle className="w-3.5 h-3.5 text-primary flex-shrink-0" />
-              <span className="text-xs font-medium text-gray-700 truncate max-w-[250px]">
-                {point}
-              </span>
-            </div>
-          ))}
-          {data.learningPoints.length > 3 && (
-            <div className="inline-flex items-center px-3 py-1.5 bg-gray-100 rounded-full">
-              <span className="text-xs font-medium text-gray-600">
-                +{data.learningPoints.length - 3} more
-              </span>
-            </div>
-          )}
-        </div>
-
-        {/* CTA Button */}
-        <div className="mt-auto pt-4 border-t border-gray-100">
-          <Link
-            href={`/course/${data.id}`}
-            className="btn btn-primary text-white btn-block text-sm font-semibold  border-0 transition-all duration-300"
-          >
-            Explore Course
-            <HiArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
-          </Link>
-        </div>
-      </div>
-
-    </div>
   );
 }

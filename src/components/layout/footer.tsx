@@ -7,7 +7,7 @@ export default async function Footer() {
     getCourses(),
   ]);
 
-  const courses = coursesResponse.data.coursesCollection.items;
+  const courses = coursesResponse.data.courseCollection.items;
   const contactData = contactResponse.data.contactCollection.items[0] ?? {};
   const { email, phoneNumber: phone, addresses } = contactData;
 

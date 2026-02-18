@@ -1,19 +1,18 @@
 import Image from 'next/image';
 import { HiCheckCircle, HiClock, HiAcademicCap, HiUserGroup, HiLightningBolt } from "react-icons/hi";
+import { CourseItem } from '@/lib/contentful/types/courses';
 
 interface CourseDetailHeroProps {
-    course: {
-        name: string;
-        duration: string;
-        sessions: string;
-        mode: string;
-        targetAudience: string;
-        prerequisites: string;
-        image: { url: string };
-    }
+    course: CourseItem;
 }
 
 export default function CourseDetailHero({ course }: CourseDetailHeroProps) {
+    // Calculate duration range from tiers if available, else fallback
+    const durations = course.tiers?.items?.map(t => t.durationMonths) || [];
+    const durationDisplay = durations.length > 0 
+        ? (durations.length > 1 ? `${durations[0]} - ${durations[durations.length - 1]}` : durations[0]) 
+        : 'Flexible';
+
     return (
         <section className='w-full relative overflow-hidden bg-gradient-to-br from-white via-primary/5 to-accent/10 pt-28 pb-16 lg:pt-16 lg:pb-24'>
              {/* Animated Background Elements */}
@@ -29,32 +28,28 @@ export default function CourseDetailHero({ course }: CourseDetailHeroProps) {
                     <div className='flex-1 flex flex-col gap-6 items-start animate-fade-in text-center lg:text-left'>
                         
                         <div className="space-y-4">
-                            
                             <h1 className='text-4xl lg:text-6xl font-black text-gray-900 leading-[1.1] capitalize'>
-                                {course.name}
+                                {course.title}
                             </h1>
                         </div>
 
-                            <div className='border-2 bg-primary rounded-3xl p-1 px-3 text-white'>
-                                <span className="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
-                                {course.mode}
-                            </div>
                         {/* Stats Grid */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
-                            <DetailItem icon={<HiClock />} label="Duration" value={course.duration} />
-                            <DetailItem icon={<HiAcademicCap />} label="Session" value={course.sessions} />
+                            <DetailItem icon={<HiClock />} label="Duration" value={durationDisplay} />
+                            <DetailItem icon={<HiAcademicCap />} label="Mode" value="Online / Hybrid" />
                         </div>
 
-                        <div className="space-y-6 w-full text-gray-700 bg-white/60 p-6 rounded-2xl border border-white backdrop-blur-sm shadow-sm">
-                             <div className="text-left">
-                                <b className='text-gray-900 block mb-1 text-lg'>Who is this course for?</b>
-                                <p className="text-sm leading-relaxed text-gray-600">{course.targetAudience}</p>
-                            </div>
-                            <div className="h-px w-full bg-gray-200/80"></div>
-                            <div className="text-left">
-                                <b className='text-gray-900 block mb-1 text-lg'>Prerequisites:</b>
-                                <p className="text-sm leading-relaxed text-gray-600">{course.prerequisites}</p>
-                            </div>
+                         <div className="space-y-6 w-full text-gray-700 bg-white/60 p-6 rounded-2xl border border-white backdrop-blur-sm shadow-sm">
+                             {course.overviewPoints && (
+                                <div className="text-left">
+                                    <b className='text-gray-900 block mb-1 text-lg'>Highlights:</b>
+                                    <ul className="text-sm leading-relaxed text-gray-600 list-disc pl-5">
+                                        {course.overviewPoints.map((pt, i) => (
+                                            <li key={i}>{pt}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                             )}
                         </div>
 
                         <div className='flex flex-col sm:flex-row gap-4 w-full sm:w-auto'>
@@ -75,13 +70,15 @@ export default function CourseDetailHero({ course }: CourseDetailHeroProps) {
                             
                             {/* Main Image Container */}
                             <div className="relative w-full h-full rounded-[2rem] overflow-hidden border-[6px] border-white ring-2 ring-black z-10">
-                                 <Image
-                                    alt={course.name}
-                                    src={course.image.url}
-                                    fill
-                                    className='object-cover hover:scale-105 transition-transform duration-700'
-                                    priority
-                                />
+                                 {course.image && (
+                                     <Image
+                                        alt={course.title}
+                                        src={course.image.url}
+                                        fill
+                                        className='object-cover hover:scale-105 transition-transform duration-700'
+                                        priority
+                                    />
+                                 )}
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80"></div>
                                 
                                 <div className="absolute bottom-0 left-0 p-8 text-white z-20">
