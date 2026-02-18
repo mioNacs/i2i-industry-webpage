@@ -81,29 +81,74 @@ export async function getStatsSection() {
 }
 
 export async function getCourses(): Promise<CoursesResponse> {
-  return fetchGraphQL<CoursesResponse>(`query {
-    coursesCollection {
+  const response = await fetchGraphQL<CoursesResponse>(`query {
+    courseCollection {
       items {
         sys { id }
-        name, learningPoints, startDate,
-        image { url }, module, description,
-        duration, sessions, mode,
-        targetAudience, prerequisites
+        title
+        image { url }
+        overviewPoints
+        startingPrice
+        tiersCollection {
+          items {
+            sys { id }
+            title
+            tier
+            durationMonths
+            durationHours
+            programFees
+          }
+        }
       }
     }
   }`);
+
+  // Map tiers for each course
+  response.data.courseCollection.items.forEach((course: any) => {
+    if (course.tiersCollection) {
+      course.tiers = course.tiersCollection;
+    }
+  });
+
+  return response;
 }
 
 export async function getCourse(id: string) {
-  return fetchGraphQL<{ data: { courses: CourseItem } }>(`query {
-    courses(id: "${id}") {
+  const response = await fetchGraphQL<{ data: { course: any } }>(`query {
+    course(id: "${id}") {
       sys { id }
-      name, learningPoints, startDate,
-      image { url }, module, description,
-      duration, sessions, mode,
-      targetAudience, prerequisites
+      title
+      image { url }
+      overviewPoints
+      startingPrice
+      tiersCollection {
+        items {
+          sys { id }
+          title
+          tier
+          durationMonths
+          durationHours
+          academicDuration
+          internshipDuration
+          programFees
+          gstPercentage
+          modules
+          toolsCovered
+          careerOpportunities
+          admissionEligibility
+          certificationRequirements
+          internshipDetails
+        }
+      }
     }
   }`);
+
+  // Map the collection to the expected property structure
+  if (response.data?.course?.tiersCollection) {
+    response.data.course.tiers = response.data.course.tiersCollection;
+  }
+  
+  return response as { data: { course: CourseItem } };
 }
 
 export async function getTeachingPartners() {

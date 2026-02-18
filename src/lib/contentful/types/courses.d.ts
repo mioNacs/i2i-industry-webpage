@@ -1,21 +1,44 @@
 export interface CoursesResponse {
-  data: { coursesCollection: { items: CourseItem[] } };
+  data: { courseCollection: { items: CourseItem[] } };
 }
 export interface CourseItem {
   sys: { id: string };
-  name: string;
-  learningPoints: string[];
-  startDate: string;
-  module: Module[];
-  description: string;
-  duration: string;
-  sessions: string;
-  mode: string;
-  targetAudience: string;
-  prerequisites: null | string;
+  title: string;
+  name?: string; // Keeping for legacy compatibility if needed
+  overviewPoints: string[];
   image: { url: string };
+  tiers: { items: CourseTier[] };
+  startingPrice?: number;
+  description?: string; // Marking as optional as it wasn't in the fetch
 }
-export interface Module {
-  data: string[];
+
+export interface CourseTier {
+  sys: { id: string };
+  title: string;
+  tier: string;
+  durationMonths: string;
+  durationHours: number;
+  academicDuration: string;
+  internshipDuration: string;
+  programFees: number; // Changed to number based on JSON
+  gstPercentage?: number;
+  modules: TierModule[];
+  toolsCovered: string[];
+  careerOpportunities: string[];
+  admissionEligibility: string;
+  certificationRequirements: string;
+  internshipDetails?: InternshipDetails;
+}
+
+export interface TierModule {
   name: string;
+  points: string[];
+}
+
+export interface InternshipDetails {
+  timeline: {
+    period: string;
+    tasks: string[];
+  }[];
+  final_deliverables: string[];
 }

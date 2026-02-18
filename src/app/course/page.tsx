@@ -6,7 +6,7 @@ import CourseCard from '@/components/sections/course-card'
 
 export default async function CoursesListingPage() {
     const response = (await getCourses())
-    const courses = response.data.coursesCollection.items
+    const courses = response.data.courseCollection.items
 
     return (
         <main className='w-full h-full flex flex-col items-stretch overflow-hidden bg-gray-50'>

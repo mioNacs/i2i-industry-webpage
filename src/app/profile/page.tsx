@@ -27,7 +27,7 @@ export default async function ProfilePage() {
 
     // Filter Contentful Data
     const savedJobs = contentfulJobsRes.data.jobCollection.items.filter(job => savedJobIds.has(job.sys.id));
-    const enrolledCourses = contentfulCoursesRes.data.coursesCollection.items.filter(course => enrolledCourseIds.has(course.sys.id));
+    const enrolledCourses = contentfulCoursesRes.data.courseCollection.items.filter((course: any) => enrolledCourseIds.has(course.sys.id));
 
     return (
         <div className="min-h-screen bg-gray-50 px-20">

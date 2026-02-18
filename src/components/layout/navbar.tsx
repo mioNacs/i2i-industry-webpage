@@ -51,9 +51,9 @@ export default function NavBar() {
   useEffect(() => {
     Promise.all([getCourses(), getContact()]).then(
       ([coursesRes, contactRes]) => {
-        const items = coursesRes.data.coursesCollection.items
+        const items = coursesRes.data.courseCollection.items
           .slice(0, 5)
-          .map((e: any) => ({ label: e.name, path: `/course/${e.sys.id}` }));
+          .map((e: any) => ({ label: e.title, path: `/course/${e.sys.id}` }));
         items.push({ label: VIEW_ALL_LABEL, path: "/course" });
         setCourses(items);
         setContact(contactRes.data.contactCollection.items[0]);
