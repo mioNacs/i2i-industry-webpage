@@ -1,17 +1,154 @@
 'use client'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CourseTier } from '@/lib/contentful/types/courses';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircleIcon } from '@heroicons/react/24/solid';
+import { useRazorpay } from '@/hooks/use-razorpay';
+import { createClient } from '@/lib/supabase/client';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+import type { CreateOrderResponse, VerifyPaymentResponse } from '@/types/razorpay';
 
 interface CourseTierSectionProps {
     tiers: { items: CourseTier[] };
+    courseId: string;
+    courseTitle: string;
 }
 
-export default function CourseTierSection({ tiers }: CourseTierSectionProps) {
+export default function CourseTierSection({ tiers, courseId, courseTitle }: CourseTierSectionProps) {
     // Sort tiers or ensure default order? Assuming data comes in desired order or we find 'Post Graduate'
     const defaultTier = tiers.items.find(t => t.tier === 'Post Graduate') || tiers.items[0];
     const [selectedTier, setSelectedTier] = useState<CourseTier>(defaultTier);
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [user, setUser] = useState<any>(null);
+    const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+    const { isLoaded: isRazorpayLoaded, openPayment } = useRazorpay();
+    const router = useRouter();
+
+    // Check authentication status
+    useEffect(() => {
+        const checkAuth = async () => {
+            const supabase = createClient();
+            const { data: { user } } = await supabase.auth.getUser();
+            setUser(user);
+            setIsCheckingAuth(false);
+        };
+        checkAuth();
+    }, []);
+
+    // Calculate total amount with GST (in paise)
+    const calculateTotalAmount = (tier: CourseTier): number => {
+        const baseAmount = tier.programFees;
+        const gstAmount = tier.gstPercentage ? (baseAmount * tier.gstPercentage) / 100 : 0;
+        return Math.round((baseAmount + gstAmount) * 100); // Convert to paise
+    };
+
+    // Handle enrollment/payment
+    const handleEnroll = async () => {
+        // Check if user is logged in
+        if (!user) {
+            toast.error('Please login to enroll in a course');
+            router.push('/auth/login?redirect=' + encodeURIComponent(window.location.pathname));
+            return;
+        }
+
+        if (!isRazorpayLoaded) {
+            toast.error('Payment gateway is loading. Please try again.');
+            return;
+        }
+
+        setIsProcessing(true);
+        const loadingToast = toast.loading('Preparing payment...');
+
+        try {
+            const amount = calculateTotalAmount(selectedTier);
+
+            // Step 1: Create order on server
+            const orderResponse = await fetch('/api/payment/create-order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    courseId,
+                    courseTierId: selectedTier.sys.id,
+                    courseTitle,
+                    tierTitle: selectedTier.title,
+                    amount,
+                }),
+            });
+
+            const orderData: CreateOrderResponse = await orderResponse.json();
+
+            if (!orderData.success || !orderData.orderId) {
+                throw new Error(orderData.error || 'Failed to create order');
+            }
+
+            toast.dismiss(loadingToast);
+
+            // Step 2: Open Razorpay checkout
+            const paymentResponse = await openPayment({
+                amount: orderData.amount!,
+                currency: orderData.currency!,
+                name: 'i2i Industry',
+                description: `${courseTitle} - ${selectedTier.title}`,
+                order_id: orderData.orderId,
+                prefill: {
+                    email: user.email,
+                    name: user.user_metadata?.full_name || '',
+                },
+                notes: {
+                    courseId,
+                    courseTierId: selectedTier.sys.id,
+                },
+                theme: {
+                    color: '#6366f1', // Primary color
+                },
+            });
+
+            // Step 3: Verify payment on server
+            const verifyLoadingToast = toast.loading('Verifying payment...');
+
+            const verifyResponse = await fetch('/api/payment/verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    razorpay_order_id: paymentResponse.razorpay_order_id,
+                    razorpay_payment_id: paymentResponse.razorpay_payment_id,
+                    razorpay_signature: paymentResponse.razorpay_signature,
+                    courseId,
+                    courseTierId: selectedTier.sys.id,
+                    amount,
+                }),
+            });
+
+            const verifyData: VerifyPaymentResponse = await verifyResponse.json();
+            toast.dismiss(verifyLoadingToast);
+
+            if (!verifyData.success) {
+                throw new Error(verifyData.error || 'Payment verification failed');
+            }
+
+            // Success!
+            toast.success('🎉 Enrollment successful! Welcome to the course!');
+            
+            // Redirect to profile or course page after a short delay
+            setTimeout(() => {
+                router.push('/profile');
+            }, 2000);
+
+        } catch (error: any) {
+            toast.dismiss(loadingToast);
+            
+            // Handle user cancellation differently
+            if (error.message === 'Payment cancelled by user') {
+                toast.error('Payment cancelled');
+            } else {
+                console.error('Payment error:', error);
+                toast.error(error.message || 'Payment failed. Please try again.');
+            }
+        } finally {
+            setIsProcessing(false);
+        }
+    };
 
     if (!tiers || tiers.items.length === 0) return null;
 
@@ -93,8 +230,29 @@ export default function CourseTierSection({ tiers }: CourseTierSectionProps) {
                                 </div>
 
                                 <div className="mt-10 space-y-3">
-                                    <button className="w-full py-4 bg-primary hover:bg-primary-focus text-white rounded-xl font-bold text-lg transition-colors shadow-lg shadow-primary/25">
-                                        Enroll Now
+                                    <button 
+                                        onClick={handleEnroll}
+                                        disabled={isProcessing || isCheckingAuth}
+                                        className="w-full py-4 bg-primary hover:bg-primary-focus text-white rounded-xl font-bold text-lg transition-colors shadow-lg shadow-primary/25 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                    >
+                                        {isProcessing ? (
+                                            <>
+                                                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                </svg>
+                                                Processing...
+                                            </>
+                                        ) : isCheckingAuth ? (
+                                            'Loading...'
+                                        ) : (
+                                            <>
+                                                Enroll Now
+                                                <span className="text-sm font-normal opacity-80">
+                                                    ({(calculateTotalAmount(selectedTier) / 100).toLocaleString('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 })})
+                                                </span>
+                                            </>
+                                        )}
                                     </button>
                                     <p className="text-center text-xs text-gray-500">Limited seats available for the upcoming batch.</p>
                                 </div>

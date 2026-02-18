@@ -35,6 +35,12 @@ export interface TierModule {
   points: string[];
 }
 
+// Module type for course-curriculum (legacy)
+export interface Module {
+  name: string;
+  data: string[];
+}
+
 export interface InternshipDetails {
   timeline: {
     period: string;

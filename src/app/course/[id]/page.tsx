@@ -36,7 +36,7 @@ export default async function CoursePage({ params }: { params: Promise<PageProp>
              
 
             {/* Course Tiers */}
-            <CourseTierSection tiers={course.tiers} />
+            <CourseTierSection tiers={course.tiers} courseId={course.sys.id} courseTitle={course.title} />
 
 
 
