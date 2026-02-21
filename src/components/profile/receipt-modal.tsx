@@ -23,10 +23,12 @@ export default function ReceiptModal({ isOpen, onClose, enrollment, user, profil
 
     if (!isOpen || !enrollment) return null;
 
+    console.log(enrollment);
+
     const totalAmount = enrollment.totalCourseAmount || 0;
     const amountPaid = enrollment.amountPaid || 0;
     const remainingAmount = enrollment.remainingAmount || 0;
-    const invoiceNumber = `INV-${enrollment.id?.substring(0, 13).toUpperCase()}`;
+    const invoiceNumber = `INV-${enrollment.razorpayPaymentId?.substring(4).toUpperCase() || 'RECEIPT'}`;
     const basePrice = totalAmount / 1.18;
     const gstAmount = totalAmount - basePrice;
 
@@ -143,7 +145,7 @@ export default function ReceiptModal({ isOpen, onClose, enrollment, user, profil
                                         <div style={{ width: '75%', textAlign: 'center', fontSize: '13px', lineHeight: '1.6', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                                             <h1 style={{ margin: '0 0 5px 0', fontSize: '20px', fontWeight: 'bold' }}>i2i Industry Private Limited</h1>
                                             <div style={{ fontSize: '12px' }}>
-                                                <span style={{ fontWeight: 'bold' }}>Mobile:</span> 9031083510 &nbsp;&nbsp;
+                                                <span style={{ fontWeight: 'bold' }}>Mobile:</span> +91 9771618635 &nbsp;&nbsp;
                                                 <span style={{ fontWeight: 'bold' }}>Email:</span> info@i2iindustry.com &nbsp;&nbsp;
                                                 <span style={{ fontWeight: 'bold' }}>website:</span> www.i2iindustry.com
                                             </div>

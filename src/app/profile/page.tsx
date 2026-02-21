@@ -69,6 +69,7 @@ export default async function ProfilePage() {
                     durationMonths: enrollment.duration_months,
                     durationHours: enrollment.duration_hours,
                     mobileNo: enrollment.mobile_no,
+                    razorpayPaymentId: enrollment.razorpay_payment_id,
                     tier: purchasedTier || null,
                 }
             });

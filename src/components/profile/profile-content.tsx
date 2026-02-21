@@ -5,9 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {
     HiBriefcase, HiAcademicCap, HiLocationMarker, HiOfficeBuilding,
-    HiCheckCircle, HiClock, HiCalendar, HiArrowRight,
-    HiOutlinePencilAlt, HiCamera, HiOutlineChartSquareBar,
-    HiOutlineClipboardList, HiOutlineCreditCard, HiOutlineDocumentText
+    HiOutlinePencilAlt, HiCamera, HiOutlineDocumentText
 } from 'react-icons/hi';
 import SignOutButton from '@/components/auth/sign-out-button';
 import ReceiptModal from './receipt-modal';
