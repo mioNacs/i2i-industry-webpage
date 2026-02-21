@@ -232,10 +232,10 @@ export default function ReceiptModal({ isOpen, onClose, enrollment, user, profil
                                     <div style={{ padding: '12px', fontSize: '12px' }}>
                                         <div style={{ fontWeight: 'bold', fontSize: '13px', marginBottom: '8px' }}>Terms and Conditions</div>
                                         <p style={{ margin: 0, lineHeight: '1.5', color: '#1f2937' }}>
-                                            This invoice covers the upfront payment for the selected training and placement program.
-                                            The remaining fees must be paid as agreed upon or before course completion.
-                                            Upfront payments are non-refundable;
-                                            other payments are refundable if requested within 15 days of the course start, per the refund policy.
+                                            This invoice covers the upfront payment for the selected training and placement program.<br />
+                                            The remaining fees must be paid as agreed upon or before course completion.<br />
+                                            Upfront payments are non-refundable;<br />
+                                            other payments are refundable if requested within 15 days of the course start, per the refund policy.<br />
                                             Program changes need approval and may incur extra charges.
                                         </p>
                                     </div>
