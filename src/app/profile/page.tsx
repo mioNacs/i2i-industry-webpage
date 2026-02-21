@@ -55,7 +55,7 @@ export default async function ProfilePage() {
         });
 
     return (
-        <div className="min-h-screen bg-gray-50 px-20">
+        <div className="min-h-screen bg-gray-50 md:px-20">
             <ProfileContent 
                 user={user}
                 profile={profile}
