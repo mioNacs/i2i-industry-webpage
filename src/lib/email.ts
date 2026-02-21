@@ -190,7 +190,9 @@ function generateEmailHtml(data: EnrollmentEmailData): string {
               <span style="font-weight: bold; font-size: 13px; color: #111827;">THANK YOU!</span><br/><br/>
               This is a system generated proof of payment.<br/>
               Subject to terms and conditions available at:<br/>
-              <a href="https://i2iindustry.com/terms-and-conditions" style="color: #6b7280;">i2iindustry.com/terms-and-conditions</a>
+              <a href="https://i2iindustry.com/terms" style="color: #6b7280;">i2iindustry.com/terms</a><br/><br/>
+              For queries, reach out to:<br/>
+              <span style="font-weight: bold; color: #111827;">support@i2iindustry.com</span>
             </td>
           </tr>
 
@@ -217,7 +219,7 @@ export async function sendEnrollmentEmail(data: EnrollmentEmailData): Promise<{ 
     const subject = `[${data.paymentStatus.toUpperCase()}] Course Enrollment - ${data.courseTitle} - ${data.userName || data.userEmail}`;
 
     const { error } = await resend.emails.send({
-      from: 'i2i Industry <notifications@i2iindustry.com>',
+      from: 'i2i Industry <no-reply@support.i2iindustry.com>',
       to: [data.userEmail, SUPPORT_EMAIL],
       subject,
       html: generateEmailHtml(data),
