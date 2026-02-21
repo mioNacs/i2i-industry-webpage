@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if user already has a completed full payment for this course tier
-    const { data: existingEnrollment } = await supabase
+    const { data: existingEnrollments } = await supabase
       .from('enrollments')
       .select('id, payment_type, full_access_granted')
       .eq('user_id', user.id)
@@ -82,7 +82,9 @@ export async function POST(request: NextRequest) {
       .eq('tier_id', courseTierId)
       .eq('payment_status', 'completed')
       .eq('full_access_granted', true)
-      .single();
+      .limit(1);
+
+    const existingEnrollment = existingEnrollments?.[0];
 
     if (existingEnrollment) {
       return NextResponse.json(

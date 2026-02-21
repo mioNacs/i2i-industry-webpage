@@ -56,14 +56,17 @@ export async function POST(request: NextRequest) {
     }
 
     // Check for existing unconverted lead for this course
-    const { data: existingLead } = await supabase
+    const { data: existingLeads } = await supabase
       .from('enrollment_leads')
       .select('id')
       .eq('user_id', user.id)
       .eq('course_id', courseId)
       .eq('tier_id', tierId)
       .is('converted_at', null)
-      .single();
+      .order('created_at', { ascending: false })
+      .limit(1);
+
+    const existingLead = existingLeads?.[0];
 
     // If lead exists, update it instead of creating new
     if (existingLead) {

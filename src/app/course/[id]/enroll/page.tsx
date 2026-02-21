@@ -28,8 +28,8 @@ export default async function EnrollPage({ params, searchParams }: PageProps) {
     }
 
     // Fetch the course from Contentful
-    const response = await getCourse(id); 
-    const course = response.data.course; 
+    const response = await getCourse(id);
+    const course = response.data.course;
 
     if (!course) {
         return <div className="min-h-screen flex items-center justify-center">Course not found</div>;
@@ -46,19 +46,24 @@ export default async function EnrollPage({ params, searchParams }: PageProps) {
     let remainingPaymentMode = false;
     let remainingAmount = 0;
 
-    const { data: enrollment } = await supabase
+    const { data: enrollments } = await supabase
         .from('enrollments')
-        .select('tier_id, full_access_granted, remaining_amount, payment_status')
+        .select('tier_id, full_access_granted, remaining_amount, payment_status, purchased_at')
         .eq('user_id', user.id)
         .eq('course_id', course.sys.id)
+        .eq('tier_id', tierId)
         .eq('payment_status', 'completed')
-        .single();
-    
+        .order('full_access_granted', { ascending: false }) // Prioritize full access
+        .order('purchased_at', { ascending: false })
+        .limit(1);
+
+    const enrollment = enrollments?.[0];
+
     if (enrollment) {
-        if (enrollment.tier_id === tierId && !enrollment.full_access_granted && enrollment.remaining_amount > 0) {
+        if (!enrollment.full_access_granted && enrollment.remaining_amount > 0) {
             remainingPaymentMode = true;
             remainingAmount = enrollment.remaining_amount;
-        } else if (enrollment.tier_id === tierId && enrollment.full_access_granted) {
+        } else if (enrollment.full_access_granted) {
             // Already fully enrolled in this tier, take them to profile
             redirect('/profile');
         }
@@ -68,22 +73,22 @@ export default async function EnrollPage({ params, searchParams }: PageProps) {
         <main className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-start">
             <div className="w-full max-w-4xl mx-auto">
                 <div className="flex flex-col mb-8 text-center sm:text-left sm:flex-row items-center justify-between">
-                  <h1 className="text-3xl font-bold text-gray-900">
-                      Complete Your Enrollment
-                  </h1>
-                  <a href={`/course/${id}`} className="mt-4 sm:mt-0 text-primary hover:underline bg-primary/10 px-4 py-2 rounded-lg font-medium">
-                      Back to Course
-                  </a>
+                    <h1 className="text-3xl font-bold text-gray-900">
+                        Complete Your Enrollment
+                    </h1>
+                    <a href={`/course/${id}`} className="mt-4 sm:mt-0 text-primary hover:underline bg-primary/10 px-4 py-2 rounded-lg font-medium">
+                        Back to Course
+                    </a>
                 </div>
-                
+
                 <EnrollmentForm
                     courseId={course.sys.id}
                     courseTitle={course.title}
                     tier={tier}
                     user={{
-                      id: user.id || '',
-                      email: user.email || '',
-                      user_metadata: user.user_metadata,
+                        id: user.id || '',
+                        email: user.email || '',
+                        user_metadata: user.user_metadata,
                     }}
                     standalone={true}
                     remainingPaymentMode={remainingPaymentMode}

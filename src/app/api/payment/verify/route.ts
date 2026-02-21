@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
     // Check if this is a remaining payment for an existing enrollment
     if (isRemainingPayment) {
       // Find existing enrollment with partial payment
-      const { data: existingEnrollment, error: existingError } = await supabase
+      const { data: existingEnrollments, error: existingError } = await supabase
         .from('enrollments')
         .select('id, amount_paid')
         .eq('user_id', user.id)
@@ -116,25 +116,23 @@ export async function POST(request: NextRequest) {
         .eq('tier_id', courseTierId)
         .eq('payment_status', 'completed')
         .eq('full_access_granted', false)
-        .single();
+        .order('purchased_at', { ascending: false })
+        .limit(1);
+
+      const existingEnrollment = existingEnrollments?.[0];
 
       if (existingEnrollment) {
-        // Update existing enrollment
+        // Update existing enrollment using secure RPC
         const newTotalPaid = (existingEnrollment.amount_paid || 0) + amount;
-        const { error: updateError } = await supabase
-          .from('enrollments')
-          .update({
-            amount_paid: newTotalPaid,
-            remaining_amount: 0,
-            full_access_granted: true,
-            partial_access_granted: false,
-            payment_type: 'full',
-            // Store the latest payment details
-            razorpay_order_id: razorpay_order_id,
-            razorpay_payment_id: razorpay_payment_id,
-            razorpay_signature: razorpay_signature,
-          })
-          .eq('id', existingEnrollment.id);
+        const { error: updateError } = await supabase.rpc('update_enrollment_payment_secure', {
+            p_enrollment_id: existingEnrollment.id,
+            p_new_total_paid: newTotalPaid,
+            p_razorpay_order_id: razorpay_order_id,
+            p_razorpay_payment_id: razorpay_payment_id,
+            p_razorpay_signature: razorpay_signature,
+            p_payment_type: 'full',
+            p_secret: process.env.RAZORPAY_KEY_SECRET
+        });
 
         if (updateError) {
           console.error('Error updating enrollment:', updateError);

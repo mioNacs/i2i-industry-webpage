@@ -29,24 +29,29 @@ export default function CourseTierSection({ tiers, courseId, courseTitle }: Cour
     const [isCheckingAuth, setIsCheckingAuth] = useState(true);
     const [enrollmentStatus, setEnrollmentStatus] = useState<EnrollmentStatus | null>(null);
     const router = useRouter();
-    
+
     // Check authentication status and enrollment
     useEffect(() => {
         const checkAuthAndEnrollment = async () => {
             const supabase = createClient();
             const { data: { user } } = await supabase.auth.getUser();
             setUser(user);
-            
+
             if (user) {
                 // Check enrollment status for this course
-                const { data: enrollment } = await supabase
+                const { data: enrollments } = await supabase
                     .from('enrollments')
-                    .select('tier_id, full_access_granted, remaining_amount, payment_status')
+                    .select('tier_id, full_access_granted, remaining_amount, payment_status, purchased_at')
                     .eq('user_id', user.id)
                     .eq('course_id', courseId)
+                    .eq('tier_id', selectedTier.sys.id)
                     .eq('payment_status', 'completed')
-                    .single();
-                
+                    .order('full_access_granted', { ascending: false })
+                    .order('purchased_at', { ascending: false })
+                    .limit(1);
+
+                const enrollment = enrollments?.[0];
+
                 if (enrollment) {
                     setEnrollmentStatus({
                         hasEnrollment: true,
@@ -56,7 +61,7 @@ export default function CourseTierSection({ tiers, courseId, courseTitle }: Cour
                     });
                 }
             }
-            
+
             setIsCheckingAuth(false);
         };
         checkAuthAndEnrollment();
@@ -99,8 +104,8 @@ export default function CourseTierSection({ tiers, courseId, courseTitle }: Cour
                             key={tier.sys.id}
                             onClick={() => setSelectedTier(tier)}
                             className={`px-6 py-3 rounded-full text-sm md:text-base font-semibold transition-all duration-300 border-2 
-                                ${selectedTier.sys.id === tier.sys.id 
-                                    ? 'bg-primary border-primary text-white shadow-lg scale-105' 
+                                ${selectedTier.sys.id === tier.sys.id
+                                    ? 'bg-primary border-primary text-white shadow-lg scale-105'
                                     : 'bg-white border-gray-200 text-gray-600 hover:border-primary hover:text-primary'
                                 }`}
                         >
@@ -120,7 +125,7 @@ export default function CourseTierSection({ tiers, courseId, courseTitle }: Cour
                         className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100"
                     >
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
-                            
+
                             {/* Left Column: Details & Fees */}
                             <div className="lg:col-span-4 p-8 md:p-10 bg-slate-900 text-white flex flex-col justify-between">
                                 <div>
@@ -128,23 +133,23 @@ export default function CourseTierSection({ tiers, courseId, courseTitle }: Cour
                                     <div className="inline-block bg-primary/20 text-primary-content px-3 py-1 rounded-md text-sm font-medium mb-6 border border-primary/30">
                                         {selectedTier.tier} Level
                                     </div>
-                                    
+
                                     <div className="space-y-6">
                                         <div>
                                             <p className="text-gray-400 text-sm uppercase tracking-wider font-semibold">Duration</p>
                                             <p className="text-2xl font-bold">{selectedTier.durationMonths}</p>
                                             <p className="text-sm text-gray-400">({selectedTier.durationHours} Hours)</p>
                                         </div>
-                                        
+
                                         <div className="grid grid-cols-2 gap-4">
-                                             <div>
+                                            <div>
                                                 <p className="text-gray-400 text-xs uppercase tracking-wider">Academic</p>
                                                 <p className="font-semibold">{selectedTier.academicDuration}</p>
-                                             </div>
-                                             <div>
+                                            </div>
+                                            <div>
                                                 <p className="text-gray-400 text-xs uppercase tracking-wider">Internship</p>
                                                 <p className="font-semibold">{selectedTier.internshipDuration}</p>
-                                             </div>
+                                            </div>
                                         </div>
 
                                         <div className="pt-6 border-t border-gray-700">
@@ -166,7 +171,7 @@ export default function CourseTierSection({ tiers, courseId, courseTitle }: Cour
                                     {enrollmentStatus?.hasEnrollment && enrollmentStatus.tierId === selectedTier.sys.id ? (
                                         enrollmentStatus.fullAccessGranted ? (
                                             // Full access - show "You already own it" link
-                                            <Link 
+                                            <Link
                                                 href="/profile"
                                                 className="w-full py-4 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold text-lg transition-colors shadow-lg shadow-green-500/25 flex items-center justify-center gap-2"
                                             >
@@ -175,7 +180,7 @@ export default function CourseTierSection({ tiers, courseId, courseTitle }: Cour
                                             </Link>
                                         ) : enrollmentStatus.remainingAmount > 0 ? (
                                             // Partial payment - show "Pay Remaining" button
-                                            <button 
+                                            <button
                                                 onClick={handleEnroll}
                                                 disabled={isCheckingAuth}
                                                 className="w-full py-4 bg-accent hover:bg-accent-focus text-white rounded-xl font-bold text-lg transition-colors shadow-lg shadow-accent/25 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
@@ -193,7 +198,7 @@ export default function CourseTierSection({ tiers, courseId, courseTitle }: Cour
                                             </button>
                                         ) : (
                                             // Fallback - go to profile
-                                            <Link 
+                                            <Link
                                                 href="/profile"
                                                 className="w-full py-4 bg-primary hover:bg-primary-focus text-white rounded-xl font-bold text-lg transition-colors shadow-lg shadow-primary/25 flex items-center justify-center gap-2"
                                             >
@@ -202,7 +207,7 @@ export default function CourseTierSection({ tiers, courseId, courseTitle }: Cour
                                         )
                                     ) : (
                                         // No enrollment or different tier - show normal enroll button
-                                        <button 
+                                        <button
                                             onClick={handleEnroll}
                                             disabled={isCheckingAuth}
                                             className="w-full py-4 bg-primary hover:bg-primary-focus text-white rounded-xl font-bold text-lg transition-colors shadow-lg shadow-primary/25 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
@@ -226,7 +231,7 @@ export default function CourseTierSection({ tiers, courseId, courseTitle }: Cour
                             {/* Right Column: Modules & Career */}
                             <div className="lg:col-span-8 p-8 md:p-10">
                                 <div className="grid md:grid-cols-2 gap-8 md:gap-12">
-                                    
+
                                     {/* Modules */}
                                     <div>
                                         <h4 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
@@ -274,7 +279,7 @@ export default function CourseTierSection({ tiers, courseId, courseTitle }: Cour
                                                 Career Opportunities
                                             </h4>
                                             <ul className="space-y-2">
-                                                 {selectedTier.careerOpportunities?.map((career, i) => (
+                                                {selectedTier.careerOpportunities?.map((career, i) => (
                                                     <li key={i} className="flex items-center gap-2 text-sm text-gray-600">
                                                         <span className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
                                                         {career}
@@ -305,14 +310,14 @@ export default function CourseTierSection({ tiers, courseId, courseTitle }: Cour
                                 </div>
 
                                 <div className="mt-10 pt-8 border-t border-gray-100 grid md:grid-cols-2 gap-6">
-                                     <div>
+                                    <div>
                                         <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Eligibility</p>
                                         <p className="text-sm text-gray-700">{selectedTier.admissionEligibility}</p>
-                                     </div>
-                                     <div>
+                                    </div>
+                                    <div>
                                         <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Certification Requirements</p>
                                         <p className="text-sm text-gray-700">{selectedTier.certificationRequirements}</p>
-                                     </div>
+                                    </div>
                                 </div>
                             </div>
 

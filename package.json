@@ -24,6 +24,8 @@
     "contentful-management": "^11.69.3",
     "framer-motion": "^12.33.0",
     "html-react-parser": "^5.2.0",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^4.2.0",
     "keen-slider": "^6.8.6",
     "next": "^16.1.6",
     "razorpay": "^2.9.6",

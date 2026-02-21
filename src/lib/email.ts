@@ -2,8 +2,7 @@ import { Resend } from 'resend';
 
 const SUPPORT_EMAIL = 'support@i2iindustry.com';
 
-// Initialize Resend - will be undefined if API key not set
-const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+// We initialize Resend dynamically inside the function to pick up env vars without a hard restart
 
 export interface EnrollmentEmailData {
   userEmail: string;
@@ -34,174 +33,164 @@ function formatCurrency(rupees: number): string {
 }
 
 function generateEmailHtml(data: EnrollmentEmailData): string {
-  const statusColor = data.paymentStatus === 'success' ? '#22c55e' : '#ef4444';
+  const statusColor = data.paymentStatus === 'success' ? '#16a34a' : '#ef4444';
   const statusText = data.paymentStatus === 'success' ? 'Payment Successful' : 'Payment Failed';
-  const paymentTypeLabel = data.paymentType === 'full' ? 'Full Payment' : 'Partial Payment (Book Slot)';
+  const dateStr = new Date().toLocaleDateString('en-IN', {
+      day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit'
+  });
+  const invNo = `INV-${data.razorpayPaymentId?.substring(4, 12).toUpperCase() || Math.random().toString(36).substring(2,8).toUpperCase()}`;
 
+  // Make it look exactly like a paper receipt!
   return `
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Enrollment Notification - ${statusText}</title>
+  <title>Payment Receipt - i2i Industry</title>
 </head>
-<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f5;">
+<body style="margin: 0; padding: 20px; font-family: monospace, 'Courier New', Courier; background-color: #f3f4f6; color: #1f2937;">
   <table role="presentation" style="width: 100%; border-collapse: collapse;">
     <tr>
-      <td align="center" style="padding: 40px 0;">
-        <table role="presentation" style="width: 100%; max-width: 600px; border-collapse: collapse; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+      <td align="center">
+        <!-- Receipt Container -->
+        <table role="presentation" style="width: 100%; max-width: 400px; border-collapse: collapse; background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-top: 4px dashed #e5e7eb; border-bottom: 4px dashed #e5e7eb;">
           
-          <!-- Header -->
+          <!-- Header Logo & Meta -->
           <tr>
-            <td style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); padding: 30px; border-radius: 12px 12px 0 0;">
-              <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 600;">
-                📚 Course Enrollment Notification
-              </h1>
-              <p style="margin: 10px 0 0; color: rgba(255, 255, 255, 0.9); font-size: 14px;">
-                ${new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
-              </p>
+            <td style="padding: 30px 20px 10px; text-align: center;">
+              <h1 style="margin: 0 0 5px; font-size: 18px; font-weight: bold; font-family: sans-serif; letter-spacing: 1px;">i2i INDUSTRY PRIVATE LIMITED</h1>
+              <p style="margin: 0; font-size: 12px; color: #4b5563;">support@i2iindustry.com</p>
+              <p style="margin: 0; font-size: 12px; color: #4b5563;">+91 9771618635</p>
+              <p style="margin: 0; font-size: 12px; color: #4b5563;">www.i2iindustry.com</p>
             </td>
           </tr>
 
-          <!-- Status Badge -->
+          <!-- Dashed Line -->
           <tr>
-            <td style="padding: 30px 30px 0;">
-              <div style="background-color: ${statusColor}15; border: 1px solid ${statusColor}40; border-radius: 8px; padding: 15px; text-align: center;">
-                <span style="color: ${statusColor}; font-weight: 600; font-size: 18px;">
-                  ${data.paymentStatus === 'success' ? '✅' : '❌'} ${statusText}
-                </span>
-                <p style="margin: 5px 0 0; color: #64748b; font-size: 14px;">
-                  ${paymentTypeLabel}
-                </p>
-              </div>
+            <td style="padding: 0 20px;">
+              <div style="border-top: 1px dashed #9ca3af; margin: 15px 0;"></div>
             </td>
           </tr>
 
-          <!-- User Information -->
+          <!-- Invoice Details -->
           <tr>
-            <td style="padding: 30px;">
-              <h2 style="margin: 0 0 20px; color: #1e293b; font-size: 18px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">
-                👤 User Details
-              </h2>
-              <table style="width: 100%; border-collapse: collapse;">
+            <td style="padding: 0 20px; font-size: 13px;">
+              <table style="width: 100%;">
                 <tr>
-                  <td style="padding: 8px 0; color: #64748b; width: 40%;">Name:</td>
-                  <td style="padding: 8px 0; color: #1e293b; font-weight: 500;">${data.userName || 'N/A'}</td>
+                  <td style="text-align: left;">Receipt No:</td>
+                  <td style="text-align: right; font-weight: bold;">${invNo}</td>
                 </tr>
                 <tr>
-                  <td style="padding: 8px 0; color: #64748b;">Email:</td>
-                  <td style="padding: 8px 0; color: #1e293b; font-weight: 500;">
-                    <a href="mailto:${data.userEmail}" style="color: #6366f1; text-decoration: none;">${data.userEmail}</a>
-                  </td>
+                  <td style="text-align: left;">Date:</td>
+                  <td style="text-align: right; font-weight: bold;">${dateStr}</td>
                 </tr>
                 <tr>
-                  <td style="padding: 8px 0; color: #64748b;">Mobile:</td>
-                  <td style="padding: 8px 0; color: #1e293b; font-weight: 500;">
-                    <a href="tel:${data.mobileNo}" style="color: #6366f1; text-decoration: none;">${data.mobileNo}</a>
-                  </td>
-                </tr>
-                ${data.alternateMobileNo ? `
-                <tr>
-                  <td style="padding: 8px 0; color: #64748b;">Alternate Mobile:</td>
-                  <td style="padding: 8px 0; color: #1e293b; font-weight: 500;">
-                    <a href="tel:${data.alternateMobileNo}" style="color: #6366f1; text-decoration: none;">${data.alternateMobileNo}</a>
-                  </td>
-                </tr>
-                ` : ''}
-              </table>
-            </td>
-          </tr>
-
-          <!-- Course Information -->
-          <tr>
-            <td style="padding: 0 30px 30px;">
-              <h2 style="margin: 0 0 20px; color: #1e293b; font-size: 18px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">
-                📖 Course Details
-              </h2>
-              <table style="width: 100%; border-collapse: collapse;">
-                <tr>
-                  <td style="padding: 8px 0; color: #64748b; width: 40%;">Course:</td>
-                  <td style="padding: 8px 0; color: #1e293b; font-weight: 500;">${data.courseTitle}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; color: #64748b;">Tier:</td>
-                  <td style="padding: 8px 0; color: #1e293b; font-weight: 500;">${data.tierTitle}</td>
-                </tr>
-                ${data.durationMonths ? `
-                <tr>
-                  <td style="padding: 8px 0; color: #64748b;">Duration:</td>
-                  <td style="padding: 8px 0; color: #1e293b; font-weight: 500;">${data.durationMonths}${data.durationHours ? ` (${data.durationHours} Hours)` : ''}</td>
-                </tr>
-                ` : ''}
-                <tr>
-                  <td style="padding: 8px 0; color: #64748b;">Mode:</td>
-                  <td style="padding: 8px 0; color: #1e293b; font-weight: 500;">${data.courseMode}</td>
+                  <td style="text-align: left;">Status:</td>
+                  <td style="text-align: right; font-weight: bold; color: ${statusColor};">${statusText}</td>
                 </tr>
               </table>
             </td>
           </tr>
 
-          <!-- Payment Information -->
+          <!-- Dashed Line -->
           <tr>
-            <td style="padding: 0 30px 30px;">
-              <h2 style="margin: 0 0 20px; color: #1e293b; font-size: 18px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">
-                💳 Payment Details
-              </h2>
-              <table style="width: 100%; border-collapse: collapse; background-color: #f8fafc; border-radius: 8px;">
+            <td style="padding: 0 20px;">
+              <div style="border-top: 1px dashed #9ca3af; margin: 15px 0;"></div>
+            </td>
+          </tr>
+
+          <!-- User Details -->
+          <tr>
+            <td style="padding: 0 20px; font-size: 13px;">
+              <h3 style="margin: 0 0 10px; font-size: 14px; text-decoration: underline;">BILLED TO</h3>
+              <table style="width: 100%;">
                 <tr>
-                  <td style="padding: 12px 15px; color: #64748b;">Payment Type:</td>
-                  <td style="padding: 12px 15px; color: #1e293b; font-weight: 600;">${paymentTypeLabel}</td>
+                  <td style="text-align: left; padding-bottom: 4px;">Name:</td>
+                  <td style="text-align: right; font-weight: bold;">${data.userName || data.userEmail.split('@')[0]}</td>
                 </tr>
                 <tr>
-                  <td style="padding: 12px 15px; color: #64748b;">Amount Paid:</td>
-                  <td style="padding: 12px 15px; color: ${statusColor}; font-weight: 700; font-size: 18px;">${formatCurrency(data.amountPaid)}</td>
+                  <td style="text-align: left; padding-bottom: 4px;">Email:</td>
+                  <td style="text-align: right; font-weight: bold;">${data.userEmail}</td>
                 </tr>
                 <tr>
-                  <td style="padding: 12px 15px; color: #64748b;">Total Course Fee:</td>
-                  <td style="padding: 12px 15px; color: #1e293b; font-weight: 500;">${formatCurrency(data.totalAmount)}</td>
+                  <td style="text-align: left; padding-bottom: 4px;">Mobile:</td>
+                  <td style="text-align: right; font-weight: bold;">${data.mobileNo || 'N/A'}</td>
                 </tr>
-                ${data.remainingAmount > 0 ? `
-                <tr>
-                  <td style="padding: 12px 15px; color: #64748b;">Remaining Amount:</td>
-                  <td style="padding: 12px 15px; color: #f59e0b; font-weight: 600;">${formatCurrency(data.remainingAmount)}</td>
-                </tr>
-                ` : ''}
-                ${data.razorpayPaymentId ? `
-                <tr>
-                  <td style="padding: 12px 15px; color: #64748b;">Payment ID:</td>
-                  <td style="padding: 12px 15px; color: #1e293b; font-family: monospace; font-size: 12px;">${data.razorpayPaymentId}</td>
-                </tr>
-                ` : ''}
-                ${data.razorpayOrderId ? `
-                <tr>
-                  <td style="padding: 12px 15px; color: #64748b;">Order ID:</td>
-                  <td style="padding: 12px 15px; color: #1e293b; font-family: monospace; font-size: 12px;">${data.razorpayOrderId}</td>
-                </tr>
-                ` : ''}
               </table>
             </td>
           </tr>
 
-          ${data.paymentStatus === 'failed' && data.errorReason ? `
-          <!-- Error Details -->
+          <!-- Solid Line -->
           <tr>
-            <td style="padding: 0 30px 30px;">
-              <div style="background-color: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 15px;">
-                <h3 style="margin: 0 0 10px; color: #dc2626; font-size: 14px;">⚠️ Error Reason:</h3>
-                <p style="margin: 0; color: #7f1d1d; font-size: 13px;">${data.errorReason}</p>
-              </div>
+            <td style="padding: 0 20px;">
+              <div style="border-top: 2px solid #374151; margin: 15px 0;"></div>
             </td>
           </tr>
-          ` : ''}
 
-          <!-- Footer -->
+          <!-- Item Details -->
           <tr>
-            <td style="background-color: #f8fafc; padding: 20px 30px; border-radius: 0 0 12px 12px; border-top: 1px solid #e2e8f0;">
-              <p style="margin: 0; color: #64748b; font-size: 12px; text-align: center;">
-                This is an automated notification from i2i Industry enrollment system.<br>
-                Please do not reply to this email.
-              </p>
+            <td style="padding: 0 20px; font-size: 13px;">
+              <table style="width: 100%;">
+                <tr>
+                  <td style="text-align: left; font-weight: bold; padding-bottom: 5px;">ITEM</td>
+                  <td style="text-align: right; font-weight: bold; padding-bottom: 5px;">AMOUNT</td>
+                </tr>
+                <tr>
+                  <td style="text-align: left; vertical-align: top;">
+                    <strong>${data.courseTitle}</strong><br/>
+                    Tier: ${data.tierTitle}<br/>
+                    <small>(${data.paymentType === 'full' ? 'Full Payment' : 'Slot Booking'})</small>
+                  </td>
+                  <td style="text-align: right; vertical-align: top; font-weight: bold;">
+                    ${formatCurrency(data.totalAmount)}
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Thick Solid Line -->
+          <tr>
+            <td style="padding: 0 20px;">
+              <div style="border-top: 2px solid #374151; margin: 15px 0;"></div>
+            </td>
+          </tr>
+
+          <!-- Totals -->
+          <tr>
+            <td style="padding: 0 20px; font-size: 13px;">
+              <table style="width: 100%;">
+                <tr>
+                  <td style="text-align: left; padding: 4px 0;">Total Due</td>
+                  <td style="text-align: right; padding: 4px 0;">${formatCurrency(data.totalAmount)}</td>
+                </tr>
+                <tr>
+                  <td style="text-align: left; font-weight: bold; color: ${statusColor}; padding: 4px 0;">Received</td>
+                  <td style="text-align: right; font-weight: bold; color: ${statusColor}; padding: 4px 0;">- ${formatCurrency(data.amountPaid)}</td>
+                </tr>
+                ${data.remainingAmount > 0 ? '<tr>' +
+                  '<td style="text-align: left; font-weight: bold; color: #d97706; padding: 10px 0 4px; border-top: 1px solid #d1d5db;">Balance Pending</td>' +
+                  '<td style="text-align: right; font-weight: bold; color: #d97706; padding: 10px 0 4px; border-top: 1px solid #d1d5db;">' + formatCurrency(data.remainingAmount) + '</td>' +
+                '</tr>' : ''}
+              </table>
+            </td>
+          </tr>
+
+          <!-- Dashed Line -->
+          <tr>
+            <td style="padding: 0 20px;">
+              <div style="border-top: 1px dashed #9ca3af; margin: 20px 0 15px;"></div>
+            </td>
+          </tr>
+
+          <!-- Footer T&C -->
+          <tr>
+            <td style="padding: 0 20px 30px; text-align: center; font-size: 11px; color: #6b7280; line-height: 1.4;">
+              <span style="font-weight: bold; font-size: 13px; color: #111827;">THANK YOU!</span><br/><br/>
+              This is a system generated proof of payment.<br/>
+              Subject to terms and conditions available at:<br/>
+              <a href="https://i2iindustry.com/terms-and-conditions" style="color: #6b7280;">i2iindustry.com/terms-and-conditions</a>
             </td>
           </tr>
 
@@ -213,20 +202,23 @@ function generateEmailHtml(data: EnrollmentEmailData): string {
 </html>
   `;
 }
-
 export async function sendEnrollmentEmail(data: EnrollmentEmailData): Promise<{ success: boolean; error?: string }> {
-  if (!resend) {
+  const apiKey = process.env.RESEND_API_KEY;
+  
+  if (!apiKey) {
     console.warn('Resend API key not configured. Email not sent.');
     console.log('Enrollment data:', JSON.stringify(data, null, 2));
     return { success: true, error: 'Email service not configured' };
   }
+
+  const resend = new Resend(apiKey);
 
   try {
     const subject = `[${data.paymentStatus.toUpperCase()}] Course Enrollment - ${data.courseTitle} - ${data.userName || data.userEmail}`;
 
     const { error } = await resend.emails.send({
       from: 'i2i Industry <notifications@i2iindustry.com>',
-      to: [SUPPORT_EMAIL],
+      to: [data.userEmail, SUPPORT_EMAIL],
       subject,
       html: generateEmailHtml(data),
     });

@@ -7,9 +7,10 @@ import {
     HiBriefcase, HiAcademicCap, HiLocationMarker, HiOfficeBuilding,
     HiCheckCircle, HiClock, HiCalendar, HiArrowRight,
     HiOutlinePencilAlt, HiCamera, HiOutlineChartSquareBar,
-    HiOutlineClipboardList, HiOutlineCreditCard
+    HiOutlineClipboardList, HiOutlineCreditCard, HiOutlineDocumentText
 } from 'react-icons/hi';
 import SignOutButton from '@/components/auth/sign-out-button';
+import ReceiptModal from './receipt-modal';
 
 interface ProfileContentProps {
     profile: any;
@@ -24,7 +25,8 @@ export default function ProfileContent({
     savedJobs,
     enrolledCourses,
 }: ProfileContentProps) {
-    const [activeTab, setActiveTab] = useState<'jobs' | 'courses' | 'billing'>('courses');
+    const [activeTab, setActiveTab] = useState<'jobs' | 'courses'>('courses');
+    const [selectedReceipt, setSelectedReceipt] = useState<any>(null);
 
     return (
         <div className="w-full min-h-screen bg-slate-50">
@@ -96,7 +98,6 @@ export default function ProfileContent({
                         {[
                             { id: 'courses', label: 'My Courses', icon: HiAcademicCap, badge: enrolledCourses.length },
                             { id: 'jobs', label: 'Saved Jobs', icon: HiBriefcase, badge: savedJobs.length },
-                            { id: 'billing', label: 'Billing/Invoices', icon: HiOutlineCreditCard, badge: null },
                         ].map((tab) => (
                             <button
                                 key={tab.id}
@@ -302,6 +303,14 @@ export default function ProfileContent({
                                                             </Link>
                                                         </>
                                                     )}
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setSelectedReceipt(course)}
+                                                        className="btn btn-outline border-gray-200 text-[#0F4A8A] hover:bg-gray-100 min-h-[44px] h-[44px] rounded-lg px-3 group/receipt flex items-center justify-center relative overflow-visible"
+                                                        title="View Receipt"
+                                                    >
+                                                        <HiOutlineDocumentText className="w-5 h-5 group-hover/receipt:scale-110 transition-transform" />
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -319,19 +328,17 @@ export default function ProfileContent({
                         )}
                     </div>
                 )}
-
-                {/* Placeholder Tabs */}
-                {['billing'].includes(activeTab) && (
-                    <div className="animate-fade-in flex flex-col items-center justify-center py-20 bg-white rounded-2xl border border-dashed border-gray-200">
-                        <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-                            <HiOutlineChartSquareBar className="text-gray-300 text-3xl" />
-                        </div>
-                        <h3 className="text-xl font-bold text-gray-800 mb-2 capitalize">{activeTab} Details</h3>
-                        <p className="text-gray-500 max-w-sm text-center">This section is currently under development. Check back soon for updates to your {activeTab}.</p>
-                    </div>
-                )}
-
             </div>
+
+            {/* Receipt Modal */}
+            <ReceiptModal
+                isOpen={!!selectedReceipt}
+                onClose={() => setSelectedReceipt(null)}
+                enrollment={selectedReceipt?.enrollment}
+                user={user}
+                profile={profile}
+                courseTitle={selectedReceipt?.title || selectedReceipt?.name}
+            />
         </div>
     );
 }
