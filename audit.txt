@@ -1,0 +1,119 @@
+﻿# npm audit report
+
+ajv  <6.14.0
+Severity: moderate
+ajv has ReDoS when using `$data` option - https://github.com/advisories/GHSA-2g4f-4pwh-qvx6
+fix available via `npm audit fix`
+node_modules/ajv
+
+jsonpath  *
+Severity: high
+jsonpath has Arbitrary Code Injection via Unsafe Evaluation of JSON Path Expressions - https://github.com/advisories/GHSA-87r5-mp6g-5w5j
+fix available via `npm audit fix --force`
+Will install contentful-cli@2.6.30, which is a breaking change
+node_modules/jsonpath
+  bfj  7.1.0 - 9.1.2
+  Depends on vulnerable versions of jsonpath
+  node_modules/bfj
+    contentful-export  >=7.19.75
+    Depends on vulnerable versions of bfj
+    node_modules/contentful-export
+      contentful-cli  >=2.6.31
+      Depends on vulnerable versions of contentful-export
+      Depends on vulnerable versions of contentful-import
+      node_modules/contentful-cli
+
+minimatch  <10.2.1
+Severity: high
+minimatch has a ReDoS via repeated wildcards with non-matching literal in pattern - https://github.com/advisories/GHSA-3ppc-4f35-3m26
+fix available via `npm audit fix --force`
+Will install @eslint/eslintrc@0.1.0, which is a breaking change
+node_modules/@typescript-eslint/typescript-estree/node_modules/minimatch
+node_modules/minimatch
+  @eslint/config-array  <=0.22.0
+  Depends on vulnerable versions of minimatch
+  node_modules/@eslint/config-array
+    eslint  0.7.1 - 2.0.0-rc.1 || 4.1.0 - 10.0.0-rc.2
+    Depends on vulnerable versions of @eslint/config-array
+    Depends on vulnerable versions of @eslint/eslintrc
+    Depends on vulnerable versions of @humanwhocodes/config-array
+    Depends on vulnerable versions of file-entry-cache
+    Depends on vulnerable versions of minimatch
+    node_modules/contentful-import/node_modules/eslint
+    node_modules/eslint
+      contentful-import  >=9.0.0
+      Depends on vulnerable versions of eslint
+      node_modules/contentful-import
+  @eslint/eslintrc  0.0.1 || >=0.1.1
+  Depends on vulnerable versions of minimatch
+  node_modules/@eslint/eslintrc
+  node_modules/contentful-import/node_modules/@eslint/eslintrc
+  @humanwhocodes/config-array  *
+  Depends on vulnerable versions of minimatch
+  node_modules/@humanwhocodes/config-array
+  @typescript-eslint/typescript-estree  >=6.16.0
+  Depends on vulnerable versions of minimatch
+  node_modules/@typescript-eslint/typescript-estree
+    @typescript-eslint/parser  >=6.16.0
+    Depends on vulnerable versions of @typescript-eslint/typescript-estree
+    node_modules/@typescript-eslint/parser
+      typescript-eslint  *
+      Depends on vulnerable versions of @typescript-eslint/eslint-plugin
+      Depends on vulnerable versions of @typescript-eslint/parser
+      Depends on vulnerable versions of @typescript-eslint/typescript-estree
+      Depends on vulnerable versions of @typescript-eslint/utils
+      node_modules/typescript-eslint
+        eslint-config-next  >=10.2.1-canary.2
+        Depends on vulnerable versions of eslint-plugin-import
+        Depends on vulnerable versions of eslint-plugin-jsx-a11y
+        Depends on vulnerable versions of eslint-plugin-react
+        Depends on vulnerable versions of typescript-eslint
+        node_modules/eslint-config-next
+    @typescript-eslint/type-utils  >=6.16.0
+    Depends on vulnerable versions of @typescript-eslint/typescript-estree
+    Depends on vulnerable versions of @typescript-eslint/utils
+    node_modules/@typescript-eslint/type-utils
+    @typescript-eslint/utils  >=6.16.0
+    Depends on vulnerable versions of @typescript-eslint/typescript-estree
+    node_modules/@typescript-eslint/utils
+      @typescript-eslint/eslint-plugin  >=6.16.0
+      Depends on vulnerable versions of @typescript-eslint/type-utils
+      Depends on vulnerable versions of @typescript-eslint/utils
+      node_modules/@typescript-eslint/eslint-plugin
+  eslint-plugin-import  >=1.15.0
+  Depends on vulnerable versions of minimatch
+  node_modules/eslint-plugin-import
+  eslint-plugin-jsx-a11y  >=6.5.0
+  Depends on vulnerable versions of minimatch
+  node_modules/eslint-plugin-jsx-a11y
+  eslint-plugin-react  >=7.23.0
+  Depends on vulnerable versions of minimatch
+  node_modules/eslint-plugin-react
+  glob  3.0.0 - 10.5.0
+  Depends on vulnerable versions of minimatch
+  node_modules/glob
+    rimraf  2.3.0 - 3.0.2 || 4.2.0 - 5.0.10
+    Depends on vulnerable versions of glob
+    node_modules/rimraf
+      flat-cache  1.3.4 - 4.0.0
+      Depends on vulnerable versions of rimraf
+      node_modules/contentful-import/node_modules/flat-cache
+        file-entry-cache  4.0.0 - 7.0.2
+        Depends on vulnerable versions of flat-cache
+        node_modules/contentful-import/node_modules/file-entry-cache
+
+tmp  <=0.2.3
+tmp allows arbitrary temporary file / directory write via symbolic link `dir` parameter - https://github.com/advisories/GHSA-52f5-9888-hmc6
+fix available via `npm audit fix`
+node_modules/external-editor/node_modules/tmp
+  external-editor  >=1.1.1
+  Depends on vulnerable versions of tmp
+  node_modules/external-editor
+
+27 vulnerabilities (2 low, 1 moderate, 24 high)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force

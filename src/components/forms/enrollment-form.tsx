@@ -12,7 +12,7 @@ import type { CreateOrderResponse, VerifyPaymentResponse } from '@/types/razorpa
 // ── Types ─────────────────────────────────────────────────────
 
 interface EnrollmentFormProps {
-  modalId: string;
+  modalId?: string;
   courseId: string;
   courseTitle: string;
   tier: CourseTier;
@@ -27,6 +27,7 @@ interface EnrollmentFormProps {
   onSuccess?: () => void;
   remainingPaymentMode?: boolean;  // If true, show only remaining payment button
   remainingAmount?: number;         // Remaining amount to pay
+  standalone?: boolean;             // Render as a standalone component on page
 }
 
 interface FormData {
@@ -61,7 +62,7 @@ const validatePhone = (phone: string): boolean => {
 // ── Component ─────────────────────────────────────────────────────
 
 export default function EnrollmentForm({
-  modalId,
+  modalId = 'enrollment-modal',
   courseId,
   courseTitle,
   tier,
@@ -70,6 +71,7 @@ export default function EnrollmentForm({
   onSuccess,
   remainingPaymentMode = false,
   remainingAmount = 0,
+  standalone = false,
 }: EnrollmentFormProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const router = useRouter();
@@ -338,271 +340,298 @@ export default function EnrollmentForm({
     dialogRef.current?.close();
   };
 
+  const formContent = (
+    <div className={standalone ? "w-full max-w-3xl mx-auto bg-white rounded-2xl shadow-xl flex flex-col overflow-hidden border border-gray-100" : "modal-box max-w-2xl max-h-[90vh] bg-white p-0 flex flex-col"}>
+      {/* Header */}
+      <div className="bg-primary p-6 sm:p-8 text-white shrink-0">
+        <div className="flex justify-between items-start gap-4">
+          <div>
+            <h3 className="text-2xl sm:text-3xl font-bold">Enroll in Course</h3>
+            <p className="text-white/90 text-sm sm:text-base mt-2 font-medium">{courseTitle} - {tier.title}</p>
+          </div>
+          {!standalone && (
+            <button
+              onClick={closeModal}
+              className="btn btn-ghost btn-sm btn-circle text-white hover:bg-white/20 mt-1"
+            >
+              <CgClose className="w-5 h-5" />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Form Content - Scrollable */}
+      <div className={`p-6 sm:p-8 space-y-8 ${standalone ? '' : 'overflow-y-auto flex-1'}`}>
+        {/* Course Details (Read-only) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text font-semibold text-gray-700">Course Name</span>
+            </label>
+            <input
+              type="text"
+              value={courseTitle}
+              readOnly
+              className="input input-bordered bg-gray-50 text-gray-700 font-medium"
+            />
+          </div>
+
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text font-semibold text-gray-700">Tier</span>
+            </label>
+            <input
+              type="text"
+              value={tier.title}
+              readOnly
+              className="input input-bordered bg-gray-50 text-gray-700 font-medium"
+            />
+          </div>
+
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text font-semibold text-gray-700">Duration (Months)</span>
+            </label>
+            <input
+              type="text"
+              value={tier.durationMonths}
+              readOnly
+              className="input input-bordered bg-gray-50 text-gray-700 font-medium"
+            />
+          </div>
+
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text font-semibold text-gray-700">Duration (Hours)</span>
+            </label>
+            <input
+              type="text"
+              value={`${tier.durationHours} Hours`}
+              readOnly
+              className="input input-bordered bg-gray-50 text-gray-700 font-medium"
+            />
+          </div>
+
+          {/* Course Mode - Dropdown if "Both", readonly if single mode */}
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text font-semibold text-gray-700">Course Mode</span>
+            </label>
+            {isBothModes ? (
+              <select
+                value={formData.selectedCourseMode}
+                onChange={(e) => handleChange('selectedCourseMode', e.target.value)}
+                className={`select select-bordered text-base font-medium ${errors.selectedCourseMode ? 'select-error' : ''}`}
+              >
+                {availableModes.map((mode) => (
+                  <option key={mode} value={mode}>
+                    {mode}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <input
+                type="text"
+                value={availableModes[0]}
+                readOnly
+                className="input input-bordered bg-gray-50 text-gray-700 font-medium"
+              />
+            )}
+            {errors.selectedCourseMode && (
+              <label className="label">
+                <span className="label-text-alt text-error font-medium">{errors.selectedCourseMode}</span>
+              </label>
+            )}
+          </div>
+
+          {/* Total Amount */}
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text font-semibold text-gray-700">Total Amount</span>
+            </label>
+            <input
+              type="text"
+              value={`${formatCurrency(totalAmount)} (incl. GST)`}
+              readOnly
+              className="input input-bordered bg-blue-50/50 text-blue-700 font-bold border-blue-200"
+            />
+          </div>
+        </div>
+
+        <div className="divider text-gray-400 text-sm font-semibold uppercase tracking-wider">Your Details</div>
+
+        {/* User Details */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text font-semibold text-gray-700">Email</span>
+            </label>
+            <input
+              type="email"
+              value={user.email}
+              readOnly
+              className="input input-bordered bg-gray-50 text-gray-700 font-medium"
+            />
+          </div>
+
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text font-semibold text-gray-700">Full Name</span>
+            </label>
+            <input
+              type="text"
+              value={user.user_metadata?.full_name || ''}
+              readOnly
+              className="input input-bordered bg-gray-50 text-gray-700 font-medium"
+            />
+          </div>
+
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text font-semibold text-gray-700">Mobile Number <span className="text-red-500">*</span></span>
+            </label>
+            <input
+              type="tel"
+              placeholder="Enter 10-digit mobile number"
+              value={formData.mobileNo}
+              onChange={(e) => handleChange('mobileNo', e.target.value.replace(/\D/g, '').slice(0, 10))}
+              className={`input input-bordered text-base font-medium focus:border-primary ${errors.mobileNo ? 'input-error' : ''}`}
+              maxLength={10}
+            />
+            {errors.mobileNo && (
+              <label className="label pt-1 pb-0">
+                <span className="label-text-alt text-error font-medium">{errors.mobileNo}</span>
+              </label>
+            )}
+          </div>
+
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text font-semibold text-gray-700">Alternate Mobile No.</span>
+            </label>
+            <input
+              type="tel"
+              placeholder="Optional"
+              value={formData.alternateMobileNo}
+              onChange={(e) => handleChange('alternateMobileNo', e.target.value.replace(/\D/g, '').slice(0, 10))}
+              className={`input input-bordered text-base font-medium focus:border-primary ${errors.alternateMobileNo ? 'input-error' : ''}`}
+              maxLength={10}
+            />
+            {errors.alternateMobileNo && (
+              <label className="label pt-1 pb-0">
+                <span className="label-text-alt text-error font-medium">{errors.alternateMobileNo}</span>
+              </label>
+            )}
+          </div>
+        </div>
+
+        {/* Payment Buttons */}
+        {remainingPaymentMode && remainingAmount > 0 ? (
+          // Remaining Payment Mode - Show only pay remaining button
+          <div className="flex flex-col gap-4 pt-6">
+            <div className="bg-amber-50 rounded-xl border border-amber-200 p-5 shadow-sm">
+              <div className="flex items-start gap-4">
+                <div className="mt-1 bg-amber-100 p-2 rounded-full hidden sm:block">
+                  <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-amber-900 font-semibold mb-1">
+                    You have booked a slot
+                  </p>
+                  <p className="text-amber-800 text-sm mt-1">
+                    Pay the remaining amount to unlock full access to the course content and mentorship.
+                  </p>
+                  <p className="text-amber-700 font-bold mt-2">
+                    Remaining Amount: {formatCurrency(remainingAmount)}
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <button
+              onClick={() => processPayment('full')}
+              disabled={isProcessing}
+              className="btn btn-accent w-full h-14 text-lg rounded-xl mt-2 mx-auto sm:max-w-xs shadow-lg shadow-accent/25 hover:shadow-accent/40"
+            >
+              {isProcessing ? (
+                <>
+                  <span className="loading loading-spinner loading-md"></span>
+                  Processing...
+                </>
+              ) : (
+                <>
+                  Pay Remaining
+                  <span className="text-sm font-normal opacity-90 tracking-wide ml-1">({formatCurrency(remainingAmount)})</span>
+                </>
+              )}
+            </button>
+          </div>
+        ) : (
+          // Normal Mode - Show both buttons
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 pt-6 mt-4 items-center justify-center">
+            <button
+              onClick={() => processPayment('partial')}
+              disabled={isProcessing}
+              className="btn btn-outline btn-primary flex-1 h-14 text-lg rounded-xl border-2 hover:bg-primary/10 hover:text-primary w-full max-w-sm"
+            >
+              {isProcessing && paymentMode === 'partial' ? (
+                <>
+                  <span className="loading loading-spinner loading-md"></span>
+                  Processing...
+                </>
+              ) : (
+                <>
+                  Book Your Slot
+                  <span className="text-sm font-semibold tracking-wide ml-1 opacity-90">({formatCurrency(BOOK_SLOT_AMOUNT)})</span>
+                </>
+              )}
+            </button>
+
+            <button
+              onClick={() => processPayment('full')}
+              disabled={isProcessing}
+              className="btn btn-primary flex-1 h-14 text-lg rounded-xl shadow-lg shadow-primary/30 hover:shadow-primary/50 text-white w-full max-w-sm"
+            >
+              {isProcessing && paymentMode === 'full' ? (
+                <>
+                  <span className="loading loading-spinner loading-md"></span>
+                  Processing...
+                </>
+              ) : (
+                <>
+                  Enroll Now
+                  <span className="text-sm tracking-wide ml-1 font-semibold opacity-90">({formatCurrency(totalAmount)})</span>
+                </>
+              )}
+            </button>
+          </div>
+        )}
+
+        <div className="text-center pb-2">
+          <p className="text-sm text-gray-500 max-w-md mx-auto">
+            By proceeding, you agree to our{' '}
+            <a href="/terms" className="text-primary hover:underline font-medium" target="_blank">Terms of Service</a>
+            {' '}and{' '}
+            <a href="/privacy" className="text-primary hover:underline font-medium" target="_blank">Privacy Policy</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+
+  if (standalone) {
+    return formContent;
+  }
+
   return (
     <dialog
       ref={dialogRef}
       id={modalId}
       className="modal modal-bottom sm:modal-middle"
     >
-      <div className="modal-box max-w-2xl max-h-[90vh] bg-white p-0 flex flex-col">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-primary to-primary-focus p-6 text-white shrink-0">
-          <div className="flex justify-between items-start">
-            <div>
-              <h3 className="text-xl font-bold">Enroll in Course</h3>
-              <p className="text-white/80 text-sm mt-1">{courseTitle} - {tier.title}</p>
-            </div>
-            <button
-              onClick={closeModal}
-              className="btn btn-ghost btn-sm btn-circle text-white hover:bg-white/20"
-            >
-              <CgClose className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-
-        {/* Form Content - Scrollable */}
-        <div className="p-6 space-y-6 overflow-y-auto flex-1">
-          {/* Course Details (Read-only) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text font-medium text-gray-700">Course Name</span>
-              </label>
-              <input
-                type="text"
-                value={courseTitle}
-                readOnly
-                className="input input-bordered bg-gray-50 text-gray-600"
-              />
-            </div>
-
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text font-medium text-gray-700">Tier</span>
-              </label>
-              <input
-                type="text"
-                value={tier.title}
-                readOnly
-                className="input input-bordered bg-gray-50 text-gray-600"
-              />
-            </div>
-
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text font-medium text-gray-700">Duration (Months)</span>
-              </label>
-              <input
-                type="text"
-                value={tier.durationMonths}
-                readOnly
-                className="input input-bordered bg-gray-50 text-gray-600"
-              />
-            </div>
-
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text font-medium text-gray-700">Duration (Hours)</span>
-              </label>
-              <input
-                type="text"
-                value={`${tier.durationHours} Hours`}
-                readOnly
-                className="input input-bordered bg-gray-50 text-gray-600"
-              />
-            </div>
-
-            {/* Course Mode - Dropdown if "Both", readonly if single mode */}
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text font-medium text-gray-700">Course Mode</span>
-              </label>
-              {isBothModes ? (
-                <select
-                  value={formData.selectedCourseMode}
-                  onChange={(e) => handleChange('selectedCourseMode', e.target.value)}
-                  className={`select select-bordered ${errors.selectedCourseMode ? 'select-error' : ''}`}
-                >
-                  {availableModes.map((mode) => (
-                    <option key={mode} value={mode}>
-                      {mode}
-                    </option>
-                  ))}
-                </select>
-              ) : (
-                <input
-                  type="text"
-                  value={availableModes[0]}
-                  readOnly
-                  className="input input-bordered bg-gray-50 text-gray-600"
-                />
-              )}
-              {errors.selectedCourseMode && (
-                <label className="label">
-                  <span className="label-text-alt text-error">{errors.selectedCourseMode}</span>
-                </label>
-              )}
-            </div>
-
-            {/* Total Amount */}
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text font-medium text-gray-700">Total Amount</span>
-              </label>
-              <input
-                type="text"
-                value={`${formatCurrency(totalAmount)} (incl. GST)`}
-                readOnly
-                className="input input-bordered bg-gray-50 text-gray-600 font-semibold"
-              />
-            </div>
-          </div>
-
-          <div className="divider">Your Details</div>
-
-          {/* User Details */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text font-medium text-gray-700">Email</span>
-              </label>
-              <input
-                type="email"
-                value={user.email}
-                readOnly
-                className="input input-bordered bg-gray-50 text-gray-600"
-              />
-            </div>
-
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text font-medium text-gray-700">Full Name</span>
-              </label>
-              <input
-                type="text"
-                value={user.user_metadata?.full_name || ''}
-                readOnly
-                className="input input-bordered bg-gray-50 text-gray-600"
-              />
-            </div>
-
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text font-medium text-gray-700">Mobile Number *</span>
-              </label>
-              <input
-                type="tel"
-                placeholder="Enter 10-digit mobile number"
-                value={formData.mobileNo}
-                onChange={(e) => handleChange('mobileNo', e.target.value.replace(/\D/g, '').slice(0, 10))}
-                className={`input input-bordered ${errors.mobileNo ? 'input-error' : ''}`}
-                maxLength={10}
-              />
-              {errors.mobileNo && (
-                <label className="label">
-                  <span className="label-text-alt text-error">{errors.mobileNo}</span>
-                </label>
-              )}
-            </div>
-
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text font-medium text-gray-700">Alternate Mobile No.</span>
-              </label>
-              <input
-                type="tel"
-                placeholder="Optional"
-                value={formData.alternateMobileNo}
-                onChange={(e) => handleChange('alternateMobileNo', e.target.value.replace(/\D/g, '').slice(0, 10))}
-                className={`input input-bordered ${errors.alternateMobileNo ? 'input-error' : ''}`}
-                maxLength={10}
-              />
-              {errors.alternateMobileNo && (
-                <label className="label">
-                  <span className="label-text-alt text-error">{errors.alternateMobileNo}</span>
-                </label>
-              )}
-            </div>
-          </div>
-
-          {/* Payment Buttons */}
-          {remainingPaymentMode && remainingAmount > 0 ? (
-            // Remaining Payment Mode - Show only pay remaining button
-            <div className="flex flex-col gap-4 pt-4">
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-                <p className="text-amber-800 text-sm font-medium">
-                  You have already booked a slot. Pay the remaining amount to get full access.
-                </p>
-                <p className="text-amber-600 text-xs mt-1">
-                  Remaining: {formatCurrency(remainingAmount)}
-                </p>
-              </div>
-              <button
-                onClick={() => processPayment('full')}
-                disabled={isProcessing}
-                className="btn btn-accent w-full"
-              >
-                {isProcessing ? (
-                  <>
-                    <span className="loading loading-spinner loading-sm"></span>
-                    Processing...
-                  </>
-                ) : (
-                  <>
-                    Pay Remaining
-                    <span className="text-xs opacity-70">({formatCurrency(remainingAmount)})</span>
-                  </>
-                )}
-              </button>
-            </div>
-          ) : (
-            // Normal Mode - Show both buttons
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <button
-                onClick={() => processPayment('partial')}
-                disabled={isProcessing}
-                className="btn btn-outline btn-primary flex-1"
-              >
-                {isProcessing && paymentMode === 'partial' ? (
-                  <>
-                    <span className="loading loading-spinner loading-sm"></span>
-                    Processing...
-                  </>
-                ) : (
-                  <>
-                    Book Your Slot
-                    <span className="text-xs opacity-70">({formatCurrency(BOOK_SLOT_AMOUNT)})</span>
-                  </>
-                )}
-              </button>
-
-              <button
-                onClick={() => processPayment('full')}
-                disabled={isProcessing}
-                className="btn btn-primary flex-1"
-              >
-                {isProcessing && paymentMode === 'full' ? (
-                  <>
-                    <span className="loading loading-spinner loading-sm"></span>
-                    Processing...
-                  </>
-                ) : (
-                  <>
-                    Pay Now
-                    <span className="text-xs opacity-70">({formatCurrency(totalAmount)})</span>
-                  </>
-                )}
-              </button>
-            </div>
-          )}
-
-          <p className="text-xs text-gray-500 text-center mt-2">
-            By proceeding, you agree to our Terms of Service and Privacy Policy.
-          </p>
-        </div>
-      </div>
-
+      {formContent}
       {/* Backdrop click to close */}
       <form method="dialog" className="modal-backdrop">
         <button>close</button>

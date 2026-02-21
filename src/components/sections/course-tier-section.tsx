@@ -6,7 +6,6 @@ import { CheckCircleIcon } from '@heroicons/react/24/solid';
 import { createClient } from '@/lib/supabase/client';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
-import EnrollmentForm, { useEnrollmentForm } from '@/components/forms/enrollment-form';
 import Link from 'next/link';
 
 interface EnrollmentStatus {
@@ -31,9 +30,6 @@ export default function CourseTierSection({ tiers, courseId, courseTitle }: Cour
     const [enrollmentStatus, setEnrollmentStatus] = useState<EnrollmentStatus | null>(null);
     const router = useRouter();
     
-    const modalId = 'enrollment-modal';
-    const { openModal } = useEnrollmentForm(modalId);
-
     // Check authentication status and enrollment
     useEffect(() => {
         const checkAuthAndEnrollment = async () => {
@@ -73,7 +69,7 @@ export default function CourseTierSection({ tiers, courseId, courseTitle }: Cour
         return Math.round(baseAmount + gstAmount); // Amount in rupees
     };
 
-    // Handle enrollment button click - now opens modal
+    // Handle enrollment button click - navigate to enrollment page
     const handleEnroll = async () => {
         // Check if user is logged in
         if (!user) {
@@ -82,14 +78,8 @@ export default function CourseTierSection({ tiers, courseId, courseTitle }: Cour
             return;
         }
 
-        // Open the enrollment form modal
-        openModal();
-    };
-
-    // Handle successful enrollment
-    const handleEnrollmentSuccess = () => {
-        // Optionally refresh user data or perform other actions
-        console.log('Enrollment successful!');
+        // Navigate to the enrollment page
+        router.push(`/course/${courseId}/enroll?tierId=${selectedTier.sys.id}`);
     };
 
     if (!tiers || tiers.items.length === 0) return null;
@@ -331,24 +321,6 @@ export default function CourseTierSection({ tiers, courseId, courseTitle }: Cour
                 </AnimatePresence>
             </div>
 
-            {/* Enrollment Form Modal */}
-            {user && (
-                <EnrollmentForm
-                    modalId={modalId}
-                    courseId={courseId}
-                    courseTitle={courseTitle}
-                    tier={selectedTier}
-                    user={user}
-                    onSuccess={handleEnrollmentSuccess}
-                    remainingPaymentMode={
-                        enrollmentStatus?.hasEnrollment && 
-                        enrollmentStatus.tierId === selectedTier.sys.id && 
-                        !enrollmentStatus.fullAccessGranted && 
-                        enrollmentStatus.remainingAmount > 0
-                    }
-                    remainingAmount={enrollmentStatus?.remainingAmount || 0}
-                />
-            )}
         </section>
     );
 }
