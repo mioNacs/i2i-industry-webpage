@@ -16,7 +16,7 @@ export default async function ProfilePage() {
     const [profileRes, savedJobsRes, enrollmentsRes, contentfulJobsRes, contentfulCoursesRes] = await Promise.all([
         supabase.from('profiles').select('*').eq('id', user.id).single(),
         supabase.from('saved_jobs').select('job_id, saved_at').eq('user_id', user.id),
-        supabase.from('enrollments').select('course_id, tier_id, purchased_at, amount_paid, payment_status').eq('user_id', user.id),
+        supabase.from('enrollments').select('course_id, tier_id, purchased_at, amount_paid, payment_status, full_access_granted, remaining_amount, total_course_amount, payment_type').eq('user_id', user.id),
         getJobsData(),
         getCourses()
     ]);
@@ -45,6 +45,10 @@ export default async function ProfilePage() {
                     purchasedAt: enrollment?.purchased_at,
                     amountPaid: enrollment?.amount_paid,
                     paymentStatus: enrollment?.payment_status,
+                    fullAccessGranted: enrollment?.full_access_granted,
+                    remainingAmount: enrollment?.remaining_amount,
+                    totalCourseAmount: enrollment?.total_course_amount,
+                    paymentType: enrollment?.payment_type,
                     tier: purchasedTier || null,
                 }
             };

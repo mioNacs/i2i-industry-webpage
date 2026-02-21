@@ -97,6 +97,7 @@ export async function getCourses(): Promise<CoursesResponse> {
             durationMonths
             durationHours
             programFees
+            courseMode
           }
         }
       }
@@ -132,6 +133,7 @@ export async function getCourse(id: string) {
           internshipDuration
           programFees
           gstPercentage
+          courseMode
           modules
           toolsCovered
           careerOpportunities

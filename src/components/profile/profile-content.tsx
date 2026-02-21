@@ -287,7 +287,7 @@ export default function ProfileContent({
                                             <div>
                                                 {course.enrollment?.amountPaid && (
                                                     <p className="text-lg font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                                                        {(course.enrollment.amountPaid / 100).toLocaleString('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 })}
+                                                        {course.enrollment.amountPaid.toLocaleString('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 })}
                                                     </p>
                                                 )}
                                                 {course.enrollment?.purchasedAt && (
@@ -297,13 +297,32 @@ export default function ProfileContent({
                                                 )}
                                             </div>
                                             
-                                            <Link 
-                                                href={`/course/${course.sys.id}`} 
-                                                className="group/btn flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-focus text-white text-sm font-semibold rounded-xl shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 hover:scale-105"
-                                            >
-                                                Continue
-                                                <HiArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform duration-300" />
-                                            </Link>
+                                            {/* Conditional Button/Link based on payment status */}
+                                            {course.enrollment?.fullAccessGranted ? (
+                                                <Link 
+                                                    href={`/course/${course.sys.id}`} 
+                                                    className="group/btn flex items-center gap-2 px-5 py-2.5 text-primary hover:text-primary-focus text-sm font-semibold transition-all duration-300"
+                                                >
+                                                    You already own it
+                                                    <HiArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform duration-300" />
+                                                </Link>
+                                            ) : course.enrollment?.remainingAmount > 0 ? (
+                                                <Link 
+                                                    href={`/course/${course.sys.id}`} 
+                                                    className="group/btn flex items-center gap-2 px-5 py-2.5 bg-accent hover:bg-accent-focus text-white text-sm font-semibold rounded-xl shadow-lg shadow-accent/25 hover:shadow-xl hover:shadow-accent/30 transition-all duration-300 hover:scale-105"
+                                                >
+                                                    Pay Remaining ({(course.enrollment.remainingAmount).toLocaleString('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 })})
+                                                    <HiArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform duration-300" />
+                                                </Link>
+                                            ) : (
+                                                <Link 
+                                                    href={`/course/${course.sys.id}`} 
+                                                    className="group/btn flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-focus text-white text-sm font-semibold rounded-xl shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 hover:scale-105"
+                                                >
+                                                    Continue
+                                                    <HiArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform duration-300" />
+                                                </Link>
+                                            )}
                                         </div>
                                     </div>
                                 </div>

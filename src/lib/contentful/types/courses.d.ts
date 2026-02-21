@@ -22,6 +22,7 @@ export interface CourseTier {
   internshipDuration: string;
   programFees: number; // Changed to number based on JSON
   gstPercentage?: number;
+  courseMode?: 'Online' | 'Offline' | 'Both'; // Single value: Online, Offline, or Both
   modules: TierModule[];
   toolsCovered: string[];
   careerOpportunities: string[];

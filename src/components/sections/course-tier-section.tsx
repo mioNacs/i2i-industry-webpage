@@ -3,11 +3,18 @@ import { useState, useEffect } from 'react';
 import { CourseTier } from '@/lib/contentful/types/courses';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircleIcon } from '@heroicons/react/24/solid';
-import { useRazorpay } from '@/hooks/use-razorpay';
 import { createClient } from '@/lib/supabase/client';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
-import type { CreateOrderResponse, VerifyPaymentResponse } from '@/types/razorpay';
+import EnrollmentForm, { useEnrollmentForm } from '@/components/forms/enrollment-form';
+import Link from 'next/link';
+
+interface EnrollmentStatus {
+    hasEnrollment: boolean;
+    fullAccessGranted: boolean;
+    remainingAmount: number;
+    tierId: string;
+}
 
 interface CourseTierSectionProps {
     tiers: { items: CourseTier[] };
@@ -19,31 +26,54 @@ export default function CourseTierSection({ tiers, courseId, courseTitle }: Cour
     // Sort tiers or ensure default order? Assuming data comes in desired order or we find 'Post Graduate'
     const defaultTier = tiers.items.find(t => t.tier === 'Post Graduate') || tiers.items[0];
     const [selectedTier, setSelectedTier] = useState<CourseTier>(defaultTier);
-    const [isProcessing, setIsProcessing] = useState(false);
     const [user, setUser] = useState<any>(null);
     const [isCheckingAuth, setIsCheckingAuth] = useState(true);
-    const { isLoaded: isRazorpayLoaded, openPayment } = useRazorpay();
+    const [enrollmentStatus, setEnrollmentStatus] = useState<EnrollmentStatus | null>(null);
     const router = useRouter();
+    
+    const modalId = 'enrollment-modal';
+    const { openModal } = useEnrollmentForm(modalId);
 
-    // Check authentication status
+    // Check authentication status and enrollment
     useEffect(() => {
-        const checkAuth = async () => {
+        const checkAuthAndEnrollment = async () => {
             const supabase = createClient();
             const { data: { user } } = await supabase.auth.getUser();
             setUser(user);
+            
+            if (user) {
+                // Check enrollment status for this course
+                const { data: enrollment } = await supabase
+                    .from('enrollments')
+                    .select('tier_id, full_access_granted, remaining_amount, payment_status')
+                    .eq('user_id', user.id)
+                    .eq('course_id', courseId)
+                    .eq('payment_status', 'completed')
+                    .single();
+                
+                if (enrollment) {
+                    setEnrollmentStatus({
+                        hasEnrollment: true,
+                        fullAccessGranted: enrollment.full_access_granted || false,
+                        remainingAmount: enrollment.remaining_amount || 0,
+                        tierId: enrollment.tier_id,
+                    });
+                }
+            }
+            
             setIsCheckingAuth(false);
         };
-        checkAuth();
-    }, []);
+        checkAuthAndEnrollment();
+    }, [courseId]);
 
-    // Calculate total amount with GST (in paise)
+    // Calculate total amount with GST (in rupees) - for display only
     const calculateTotalAmount = (tier: CourseTier): number => {
         const baseAmount = tier.programFees;
         const gstAmount = tier.gstPercentage ? (baseAmount * tier.gstPercentage) / 100 : 0;
-        return Math.round((baseAmount + gstAmount) * 100); // Convert to paise
+        return Math.round(baseAmount + gstAmount); // Amount in rupees
     };
 
-    // Handle enrollment/payment
+    // Handle enrollment button click - now opens modal
     const handleEnroll = async () => {
         // Check if user is logged in
         if (!user) {
@@ -52,102 +82,14 @@ export default function CourseTierSection({ tiers, courseId, courseTitle }: Cour
             return;
         }
 
-        if (!isRazorpayLoaded) {
-            toast.error('Payment gateway is loading. Please try again.');
-            return;
-        }
+        // Open the enrollment form modal
+        openModal();
+    };
 
-        setIsProcessing(true);
-        const loadingToast = toast.loading('Preparing payment...');
-
-        try {
-            const amount = calculateTotalAmount(selectedTier);
-
-            // Step 1: Create order on server
-            const orderResponse = await fetch('/api/payment/create-order', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    courseId,
-                    courseTierId: selectedTier.sys.id,
-                    courseTitle,
-                    tierTitle: selectedTier.title,
-                    amount,
-                }),
-            });
-
-            const orderData: CreateOrderResponse = await orderResponse.json();
-
-            if (!orderData.success || !orderData.orderId) {
-                throw new Error(orderData.error || 'Failed to create order');
-            }
-
-            toast.dismiss(loadingToast);
-
-            // Step 2: Open Razorpay checkout
-            const paymentResponse = await openPayment({
-                amount: orderData.amount!,
-                currency: orderData.currency!,
-                name: 'i2i Industry',
-                description: `${courseTitle} - ${selectedTier.title}`,
-                order_id: orderData.orderId,
-                prefill: {
-                    email: user.email,
-                    name: user.user_metadata?.full_name || '',
-                },
-                notes: {
-                    courseId,
-                    courseTierId: selectedTier.sys.id,
-                },
-                theme: {
-                    color: '#6366f1', // Primary color
-                },
-            });
-
-            // Step 3: Verify payment on server
-            const verifyLoadingToast = toast.loading('Verifying payment...');
-
-            const verifyResponse = await fetch('/api/payment/verify', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    razorpay_order_id: paymentResponse.razorpay_order_id,
-                    razorpay_payment_id: paymentResponse.razorpay_payment_id,
-                    razorpay_signature: paymentResponse.razorpay_signature,
-                    courseId,
-                    courseTierId: selectedTier.sys.id,
-                    amount,
-                }),
-            });
-
-            const verifyData: VerifyPaymentResponse = await verifyResponse.json();
-            toast.dismiss(verifyLoadingToast);
-
-            if (!verifyData.success) {
-                throw new Error(verifyData.error || 'Payment verification failed');
-            }
-
-            // Success!
-            toast.success('🎉 Enrollment successful! Welcome to the course!');
-            
-            // Redirect to profile or course page after a short delay
-            setTimeout(() => {
-                router.push('/profile');
-            }, 2000);
-
-        } catch (error: any) {
-            toast.dismiss(loadingToast);
-            
-            // Handle user cancellation differently
-            if (error.message === 'Payment cancelled by user') {
-                toast.error('Payment cancelled');
-            } else {
-                console.error('Payment error:', error);
-                toast.error(error.message || 'Payment failed. Please try again.');
-            }
-        } finally {
-            setIsProcessing(false);
-        }
+    // Handle successful enrollment
+    const handleEnrollmentSuccess = () => {
+        // Optionally refresh user data or perform other actions
+        console.log('Enrollment successful!');
     };
 
     if (!tiers || tiers.items.length === 0) return null;
@@ -230,30 +172,63 @@ export default function CourseTierSection({ tiers, courseId, courseTitle }: Cour
                                 </div>
 
                                 <div className="mt-10 space-y-3">
-                                    <button 
-                                        onClick={handleEnroll}
-                                        disabled={isProcessing || isCheckingAuth}
-                                        className="w-full py-4 bg-primary hover:bg-primary-focus text-white rounded-xl font-bold text-lg transition-colors shadow-lg shadow-primary/25 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                                    >
-                                        {isProcessing ? (
-                                            <>
-                                                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                                </svg>
-                                                Processing...
-                                            </>
-                                        ) : isCheckingAuth ? (
-                                            'Loading...'
+                                    {/* Conditional button based on enrollment status */}
+                                    {enrollmentStatus?.hasEnrollment && enrollmentStatus.tierId === selectedTier.sys.id ? (
+                                        enrollmentStatus.fullAccessGranted ? (
+                                            // Full access - show "You already own it" link
+                                            <Link 
+                                                href="/profile"
+                                                className="w-full py-4 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold text-lg transition-colors shadow-lg shadow-green-500/25 flex items-center justify-center gap-2"
+                                            >
+                                                <CheckCircleIcon className="w-6 h-6" />
+                                                You already own it
+                                            </Link>
+                                        ) : enrollmentStatus.remainingAmount > 0 ? (
+                                            // Partial payment - show "Pay Remaining" button
+                                            <button 
+                                                onClick={handleEnroll}
+                                                disabled={isCheckingAuth}
+                                                className="w-full py-4 bg-accent hover:bg-accent-focus text-white rounded-xl font-bold text-lg transition-colors shadow-lg shadow-accent/25 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                            >
+                                                {isCheckingAuth ? (
+                                                    'Loading...'
+                                                ) : (
+                                                    <>
+                                                        Pay Remaining
+                                                        <span className="text-sm font-normal opacity-80">
+                                                            ({enrollmentStatus.remainingAmount.toLocaleString('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 })})
+                                                        </span>
+                                                    </>
+                                                )}
+                                            </button>
                                         ) : (
-                                            <>
-                                                Enroll Now
-                                                <span className="text-sm font-normal opacity-80">
-                                                    ({(calculateTotalAmount(selectedTier) / 100).toLocaleString('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 })})
-                                                </span>
-                                            </>
-                                        )}
-                                    </button>
+                                            // Fallback - go to profile
+                                            <Link 
+                                                href="/profile"
+                                                className="w-full py-4 bg-primary hover:bg-primary-focus text-white rounded-xl font-bold text-lg transition-colors shadow-lg shadow-primary/25 flex items-center justify-center gap-2"
+                                            >
+                                                Go to My Courses
+                                            </Link>
+                                        )
+                                    ) : (
+                                        // No enrollment or different tier - show normal enroll button
+                                        <button 
+                                            onClick={handleEnroll}
+                                            disabled={isCheckingAuth}
+                                            className="w-full py-4 bg-primary hover:bg-primary-focus text-white rounded-xl font-bold text-lg transition-colors shadow-lg shadow-primary/25 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                        >
+                                            {isCheckingAuth ? (
+                                                'Loading...'
+                                            ) : (
+                                                <>
+                                                    Enroll Now
+                                                    <span className="text-sm font-normal opacity-80">
+                                                        ({calculateTotalAmount(selectedTier).toLocaleString('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 })})
+                                                    </span>
+                                                </>
+                                            )}
+                                        </button>
+                                    )}
                                     <p className="text-center text-xs text-gray-500">Limited seats available for the upcoming batch.</p>
                                 </div>
                             </div>
@@ -355,6 +330,25 @@ export default function CourseTierSection({ tiers, courseId, courseTitle }: Cour
                     </motion.div>
                 </AnimatePresence>
             </div>
+
+            {/* Enrollment Form Modal */}
+            {user && (
+                <EnrollmentForm
+                    modalId={modalId}
+                    courseId={courseId}
+                    courseTitle={courseTitle}
+                    tier={selectedTier}
+                    user={user}
+                    onSuccess={handleEnrollmentSuccess}
+                    remainingPaymentMode={
+                        enrollmentStatus?.hasEnrollment && 
+                        enrollmentStatus.tierId === selectedTier.sys.id && 
+                        !enrollmentStatus.fullAccessGranted && 
+                        enrollmentStatus.remainingAmount > 0
+                    }
+                    remainingAmount={enrollmentStatus?.remainingAmount || 0}
+                />
+            )}
         </section>
     );
 }

@@ -23,7 +23,22 @@ export async function POST(request: NextRequest) {
 
     // Parse request body
     const body = await request.json();
-    const { courseId, courseTierId, courseTitle, tierTitle, amount } = body;
+    const { 
+      courseId, 
+      courseTierId, 
+      courseTitle, 
+      tierTitle, 
+      amount,
+      // New fields for enhanced enrollment
+      leadId,
+      paymentType,
+      totalCourseAmount,
+      mobileNo,
+      alternateMobileNo,
+      courseMode,
+      durationMonths,
+      durationHours,
+    } = body;
 
     // Validate required fields
     if (!courseId || !courseTierId || !amount) {
@@ -33,7 +48,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate amount (must be positive integer in paise)
+    // Validate amount (must be positive integer in rupees)
     if (!Number.isInteger(amount) || amount <= 0) {
       return NextResponse.json(
         { success: false, error: 'Invalid amount' },
@@ -41,19 +56,37 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if user is already enrolled
+    // For partial payments, validate the amount is within range
+    if (paymentType === 'partial') {
+      const BOOK_SLOT_AMOUNT = 1000; // ₹1000 fixed for slot booking
+      if (amount < BOOK_SLOT_AMOUNT) {
+        return NextResponse.json(
+          { success: false, error: 'Slot booking amount is ₹1000' },
+          { status: 400 }
+        );
+      }
+      if (totalCourseAmount && amount > totalCourseAmount) {
+        return NextResponse.json(
+          { success: false, error: 'Partial amount cannot exceed course price' },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Check if user already has a completed full payment for this course tier
     const { data: existingEnrollment } = await supabase
       .from('enrollments')
-      .select('id')
+      .select('id, payment_type, full_access_granted')
       .eq('user_id', user.id)
       .eq('course_id', courseId)
       .eq('tier_id', courseTierId)
       .eq('payment_status', 'completed')
+      .eq('full_access_granted', true)
       .single();
 
     if (existingEnrollment) {
       return NextResponse.json(
-        { success: false, error: 'You are already enrolled in this course tier' },
+        { success: false, error: 'You already have full access to this course tier' },
         { status: 400 }
       );
     }
@@ -64,8 +97,11 @@ export async function POST(request: NextRequest) {
     const timestamp = Date.now().toString(36); // Base36 for shorter string
     const receipt = `rcpt_${shortUserId}_${timestamp}`.slice(0, 40);
     
+    // Convert rupees to paise for Razorpay (Razorpay requires amount in paise)
+    const amountInPaise = amount * 100;
+    
     const order = await razorpay.orders.create({
-      amount: amount, // Amount in paise
+      amount: amountInPaise, // Amount in paise for Razorpay
       currency: 'INR',
       receipt,
       notes: {
@@ -74,13 +110,19 @@ export async function POST(request: NextRequest) {
         userId: user.id,
         courseTitle: courseTitle || '',
         tierTitle: tierTitle || '',
+        // New notes for enhanced tracking
+        leadId: leadId || '',
+        paymentType: paymentType || 'full',
+        totalCourseAmount: totalCourseAmount?.toString() || amount.toString(),
+        mobileNo: mobileNo || '',
+        courseMode: courseMode || '',
       },
     });
 
     return NextResponse.json({
       success: true,
       orderId: order.id,
-      amount: order.amount,
+      amount: amountInPaise, // Return paise for Razorpay checkout
       currency: order.currency,
     });
   } catch (error: any) {
