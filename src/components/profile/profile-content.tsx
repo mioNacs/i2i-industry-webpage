@@ -212,12 +212,9 @@ export default function ProfileContent({
                                     const remainingAmount = course.enrollment?.remainingAmount || 0;
                                     const isFullyPaid = remainingAmount === 0 || course.enrollment?.fullAccessGranted;
 
-                                    // Mock progress
-                                    const courseProgress = isFullyPaid ? 35 : 0;
-
                                     return (
                                         <div
-                                            key={course.sys.id}
+                                            key={`${course.sys.id}_${course.enrollment?.tierId}`}
                                             className="group bg-white rounded-2xl border border-gray-200 hover:border-[#0F4A8A]/40 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col hover:-translate-y-1"
                                             style={{
                                                 animation: `slideInUp 0.6s ease-out ${index * 0.1}s both`
@@ -263,7 +260,7 @@ export default function ProfileContent({
                                                     <div className="grid grid-cols-3 gap-2">
                                                         <div className="flex flex-col">
                                                             <span className="text-[10px] uppercase tracking-wider text-gray-400 font-bold mb-1">Total Fee</span>
-                                                            <span className="font-bold text-gray-700">₹{totalAmount.toLocaleString()} <br className='sm:hidden'/>
+                                                            <span className="font-bold text-gray-700">₹{totalAmount.toLocaleString()} <br className='sm:hidden' />
                                                                 <span className="text-xs text-gray-500 font-semibold">+ 18% GST</span>
                                                             </span>
                                                         </div>
