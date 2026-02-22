@@ -312,11 +312,11 @@ export default function CourseTierSection({ tiers, courseId, courseTitle }: Cour
                                 <div className="mt-10 pt-8 border-t border-gray-100 grid md:grid-cols-2 gap-6">
                                     <div>
                                         <p className="text-md text-gray-900 uppercase font-bold mb-1">Eligibility</p>
-                                        <p className="text-sm text-gray-700">{selectedTier.admissionEligibility}</p>
+                                        <p className="text-sm text-gray-700 whitespace-pre-line">{selectedTier.admissionEligibility}</p>
                                     </div>
                                     <div>
                                         <p className="text-md text-gray-900 uppercase font-bold mb-1">Certification Requirements</p>
-                                        <p className="text-sm text-gray-700">{selectedTier.certificationRequirements}</p>
+                                        <p className="text-sm text-gray-700 whitespace-pre-line">{selectedTier.certificationRequirements}</p>
                                     </div>
                                 </div>
                             </div>
