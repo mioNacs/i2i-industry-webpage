@@ -23,7 +23,7 @@ interface CourseTierSectionProps {
 
 export default function CourseTierSection({ tiers, courseId, courseTitle }: CourseTierSectionProps) {
     // Sort tiers or ensure default order? Assuming data comes in desired order or we find 'Post Graduate'
-    const defaultTier = tiers.items.find(t => t.tier === 'Post Graduate') || tiers.items[0];
+    const defaultTier = tiers.items.find(t => t.tier === 'Fast-Track Program') || tiers.items[0];
     const [selectedTier, setSelectedTier] = useState<CourseTier>(defaultTier);
     const [user, setUser] = useState<any>(null);
     const [isCheckingAuth, setIsCheckingAuth] = useState(true);
@@ -90,7 +90,7 @@ export default function CourseTierSection({ tiers, courseId, courseTitle }: Cour
     if (!tiers || tiers.items.length === 0) return null;
 
     return (
-        <section className="py-16 px-4 md:px-8 bg-gray-50">
+        <section id="curriculum" className="py-20 px-4 md:px-8 bg-gray-50">
             <div className="max-w-7xl mx-auto">
                 <div className="text-center mb-12">
                     <h2 className="text-3xl md:text-4xl font-bold mb-4">Choose Your <span className="text-primary">Learning Path</span></h2>
@@ -311,11 +311,11 @@ export default function CourseTierSection({ tiers, courseId, courseTitle }: Cour
 
                                 <div className="mt-10 pt-8 border-t border-gray-100 grid md:grid-cols-2 gap-6">
                                     <div>
-                                        <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Eligibility</p>
+                                        <p className="text-md text-gray-900 uppercase font-bold mb-1">Eligibility</p>
                                         <p className="text-sm text-gray-700">{selectedTier.admissionEligibility}</p>
                                     </div>
                                     <div>
-                                        <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Certification Requirements</p>
+                                        <p className="text-md text-gray-900 uppercase font-bold mb-1">Certification Requirements</p>
                                         <p className="text-sm text-gray-700">{selectedTier.certificationRequirements}</p>
                                     </div>
                                 </div>

@@ -48,19 +48,69 @@ const EXPERIENCE_OPTIONS = [
 ] as const;
 
 const EDUCATION_LEVEL_OPTIONS = [
+    // Secondary
     "High School / 10th",
     "Intermediate / 12th",
+    // Diplomas
     "Diploma",
+    "Diploma in Pharmacy (D.Pharm)",
+    "Diploma in Hotel Management",
+    "Diploma in Nursing (GNM)",
+    // Engineering & Technology
     "B.Tech / B.E.",
-    "B.Sc",
-    "B.Com",
-    "B.A.",
-    "BCA",
-    "BBA",
     "M.Tech / M.E.",
+    // Science
+    "B.Sc",
     "M.Sc",
+    "B.Sc Nursing",
+    "M.Sc Nursing",
+    // Commerce & Management
+    "B.Com",
+    "M.Com",
+    "BBA",
     "MBA",
+    // Arts & Humanities
+    "B.A.",
+    "M.A.",
+    // Computer & IT
+    "BCA",
     "MCA",
+    // Medicine & Healthcare
+    "MBBS",
+    "MD (Doctor of Medicine)",
+    "MS (Master of Surgery)",
+    "BDS (Dentistry)",
+    "MDS (Master of Dental Surgery)",
+    "BAMS (Ayurveda)",
+    "BHMS (Homeopathy)",
+    "BUMS (Unani Medicine)",
+    "BPT (Physiotherapy)",
+    "MPT (Master of Physiotherapy)",
+    "B.Sc Medical Lab Technology",
+    "B.Sc Radiology",
+    "B.Sc Optometry",
+    // Pharmacy
+    "B.Pharm",
+    "M.Pharm",
+    "Pharm.D",
+    // Hotel Management & Hospitality
+    "B.Sc Hotel Management",
+    "BHM (Bachelor of Hotel Management)",
+    "MBA in Hotel Management",
+    // Law
+    "LLB",
+    "LLM",
+    "BA LLB",
+    // Architecture & Design
+    "B.Arch",
+    "M.Arch",
+    "B.Des",
+    "M.Des",
+    // Education
+    "B.Ed",
+    "M.Ed",
+    "D.El.Ed",
+    // Research
     "Ph.D",
     "Other",
 ] as const;
@@ -588,7 +638,7 @@ export function JobApplicationButton({
                                         onChange={(val) => setFormData((prev) => ({ ...prev, educationLevel: val }))}
                                         options={EDUCATION_LEVEL_OPTIONS}
                                         placeholder="Select level…"
-                                        showSearch={false}
+                                        showSearch={true}
                                     />
                                 </FormField>
 
