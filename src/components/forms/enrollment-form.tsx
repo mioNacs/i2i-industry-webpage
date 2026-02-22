@@ -87,7 +87,7 @@ export default function EnrollmentForm({
   const baseAmount = tier.programFees;
   const gstAmount = tier.gstPercentage ? (baseAmount * tier.gstPercentage) / 100 : 0;
   const totalAmount = Math.round(baseAmount + gstAmount); // in rupees
-  const BOOK_SLOT_AMOUNT = 1000; // Fixed ₹1000 for slot booking
+  const BOOK_SLOT_AMOUNT = 5000; // Fixed ₹5000 for slot booking
 
   // Form state
   const [formData, setFormData] = useState<FormData>({
@@ -192,7 +192,7 @@ export default function EnrollmentForm({
       // Determine the amount based on mode
       let amount: number;
       let actualPaymentType: 'full' | 'partial' = paymentType;
-      
+
       if (remainingPaymentMode && remainingAmount > 0) {
         // Paying remaining amount - treat as completing the full payment
         amount = remainingAmount;
@@ -549,7 +549,7 @@ export default function EnrollmentForm({
                 </div>
               </div>
             </div>
-            
+
             <button
               onClick={() => processPayment('full')}
               disabled={isProcessing}

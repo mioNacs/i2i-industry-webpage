@@ -58,10 +58,10 @@ export async function POST(request: NextRequest) {
 
     // For partial payments, validate the amount is within range
     if (paymentType === 'partial') {
-      const BOOK_SLOT_AMOUNT = 1000; // ₹1000 fixed for slot booking
+      const BOOK_SLOT_AMOUNT = 5000; // ₹5000 fixed for slot booking
       if (amount < BOOK_SLOT_AMOUNT) {
         return NextResponse.json(
-          { success: false, error: 'Slot booking amount is ₹1000' },
+          { success: false, error: 'Slot booking amount is ₹5000' },
           { status: 400 }
         );
       }
