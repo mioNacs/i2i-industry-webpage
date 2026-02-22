@@ -137,30 +137,17 @@ export default function JobDescription({
         <div className="space-y-3 w-full">
           <h2 className="text-xl font-bold text-gray-900">Apply</h2>
           <div className="bg-gradient-to-br from-blue-50/50 to-transparent border border-blue-200 rounded-xl p-6">
-            <p className="text-gray-700 leading-relaxed mb-4">
-              Please share your Resume at{" "}
+            <p className="text-gray-700 leading-relaxed">
+              Please submit your application via this {" "}
               <a
-                href="mailto:info@i2iindustry.com"
+                href="https://forms.gle/GycTqtjN2MDzdtyL6"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-primary hover:underline font-semibold"
               >
-                info@i2iindustry.com
-              </a>{" "}
-              with the following Details:
+                Google Form
+              </a>
             </p>
-            <ul className="space-y-2 text-gray-700">
-              <li className="flex items-start gap-2">
-                <span className="text-primary font-bold mt-0.5">•</span>
-                <span>Name Of Company</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-primary font-bold mt-0.5">•</span>
-                <span>Name Of Position</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-primary font-bold mt-0.5">•</span>
-                <span>Resume</span>
-              </li>
-            </ul>
           </div>
         </div>
 
