@@ -4,6 +4,7 @@ import { JobItem } from "@/lib/contentful/types/job.d";
 import Image from "next/image";
 import { LuBookmark } from "react-icons/lu";
 import JobDescriptionSections from "@/components/ui/JobDescriptionSections";
+import { JobApplicationButton } from "@/components/forms/job-application-form";
 
 const getTimeAgo = (dateString: string): string => {
   const date = new Date(dateString).getTime();
@@ -61,13 +62,13 @@ export default function JobDescription({
             <div className="flex items-center gap-4">
               <div className="h-14 w-14 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden">
                 {job.companyIcon?.url && (
-                    <Image
+                  <Image
                     src={job.companyIcon.url}
                     alt={job.companyName}
                     width={56}
                     height={56}
                     className="object-contain w-12 h-12"
-                    />
+                  />
                 )}
               </div>
               <div>
@@ -87,11 +88,10 @@ export default function JobDescription({
               aria-label={isSaved ? "Unsave job" : "Save job"}
             >
               <LuBookmark
-                className={`w-5 h-5 transition-all ${
-                  isSaved
-                    ? "fill-primary text-primary"
-                    : "text-gray-400 hover:text-gray-600"
-                }`}
+                className={`w-5 h-5 transition-all ${isSaved
+                  ? "fill-primary text-primary"
+                  : "text-gray-400 hover:text-gray-600"
+                  }`}
               />
             </button>
           </div>
@@ -136,31 +136,17 @@ export default function JobDescription({
         {/* Apply Section */}
         <div className="space-y-3 w-full">
           <h2 className="text-xl font-bold text-gray-900">Apply</h2>
-          <div className="bg-gradient-to-br from-blue-50/50 to-transparent border border-blue-200 rounded-xl p-6">
-            <p className="text-gray-700 leading-relaxed mb-4">
-              Please share your Resume at{" "}
-              <a
-                href="mailto:info@i2iindustry.com"
-                className="text-primary hover:underline font-semibold"
-              >
-                info@i2iindustry.com
-              </a>{" "}
-              with the following Details:
-            </p>
-            <ul className="space-y-2 text-gray-700">
-              <li className="flex items-start gap-2">
-                <span className="text-primary font-bold mt-0.5">•</span>
-                <span>Name Of Company</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-primary font-bold mt-0.5">•</span>
-                <span>Name Of Position</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-primary font-bold mt-0.5">•</span>
-                <span>Resume</span>
-              </li>
-            </ul>
+          <div className="bg-gradient-to-br from-blue-50/50 to-transparent border border-blue-200 rounded-xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <p className="text-gray-700 font-medium">Interested in this role?</p>
+              <p className="text-sm text-gray-500 mt-0.5">
+                Fill in your details and our team will get back to you.
+              </p>
+            </div>
+            <JobApplicationButton
+              jobTitle={job.name}
+              companyName={job.companyName}
+            />
           </div>
         </div>
 
