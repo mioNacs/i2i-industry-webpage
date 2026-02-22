@@ -16,7 +16,7 @@ export default function HomeCTA() {
         {
             title: "For Professionals",
             subtitle: "Upskilling & Career Transformation",
-            href: "/jobs",
+            href: "/course",
             icon: <FaUserTie size={24} />,
             iconClass: "bg-yellow-50 text-yellow-600",
         },
